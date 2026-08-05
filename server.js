@@ -5,7 +5,7 @@ const app = express();
 const distPath = path.join(__dirname, 'dist/ntx-erp-web/browser');
 
 app.use(express.static(distPath));
-app.get('/*', (req, res) => {
+app.get('/*splat', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
