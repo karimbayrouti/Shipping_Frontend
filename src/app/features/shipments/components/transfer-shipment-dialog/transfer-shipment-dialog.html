@@ -1,0 +1,42 @@
+<ui-dialog
+  [title]="'🔁 ' + text().transferShipmentTitle"
+  [subtitle]="shipmentCode() + ' · ' + shipment().customerName"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <div class="meta-grid meta-grid--2 grid-collapse">
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().currentWarehouseLabel }}</div>
+      <div class="meta-item__value">{{ warehouseLabel(shipment().warehouse) }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().colPackages }}</div>
+      <div class="meta-item__value">{{ shipment().packageCount }}</div>
+    </div>
+  </div>
+
+  <form id="transfer-shipment-form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="field">
+      <label class="field__label" for="transfer-target">{{ text().transferToLabel }} *</label>
+      <select
+        data-dialog-initial-focus
+        id="transfer-target"
+        class="select"
+        formControlName="targetWarehouse"
+      >
+        @for (option of destinationOptions(); track option.value) {
+          <option [value]="option.value">{{ resolvedLabel(option) }}</option>
+        }
+      </select>
+    </div>
+  </form>
+
+  <div dialogActions>
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().cancel }}
+    </button>
+    <button type="submit" form="transfer-shipment-form" class="btn btn--primary">
+      🔁 {{ text().transferConfirmAction }}
+    </button>
+  </div>
+</ui-dialog>

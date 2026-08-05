@@ -1,0 +1,6 @@
+<!-- Copy only the prototype content inside <main class="app-main"> here. -->
+<div class="page-hero">
+  <div class="page-hero__body">
+    <h1 class="page-hero__title">__Feature__</h1>
+  </div>
+</div>

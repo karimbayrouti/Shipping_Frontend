@@ -1,0 +1,324 @@
+:host {
+  display: block;
+}
+
+:host ::ng-deep .modal-overlay .modal {
+  max-width: 920px;
+}
+
+/* The quick-add-customer dialog renders as a second <ui-dialog> projected
+   inside this component's own dialog body, so its overlay is a DOM
+   descendant of the outer overlay. Target it structurally — no shared
+   Dialog component changes needed — to keep it a normal-sized dialog
+   stacked above the (still visible, dimmed) parent dialog. */
+:host ::ng-deep .modal-overlay .modal-overlay {
+  z-index: 1001;
+  background: rgba(8, 15, 30, 0.35);
+}
+
+:host ::ng-deep .modal-overlay .modal-overlay .modal {
+  max-width: 560px;
+}
+
+.form-error {
+  color: var(--danger);
+}
+
+.shipment-form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.sender-placeholder {
+  font-size: 12px;
+  color: var(--text-2);
+  background: var(--surface-2);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 9px 13px;
+}
+
+.sender-differs-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  font-size: 12.5px;
+  color: var(--text-2);
+  user-select: none;
+  margin-bottom: 6px;
+
+  input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--brand);
+    cursor: pointer;
+  }
+}
+
+.customer-search {
+  position: relative;
+}
+
+.customer-picker {
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + 4px);
+  z-index: 20;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-3);
+  overflow: hidden;
+}
+
+.customer-picker__create {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  cursor: pointer;
+  text-align: start;
+  font-family: inherit;
+}
+
+.customer-picker__create:hover,
+.customer-picker__create:focus-visible {
+  background: var(--surface-3);
+}
+
+.customer-picker__create-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.customer-picker__create-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: var(--text);
+  color: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.customer-picker__list {
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.customer-picker__item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px;
+  border: none;
+  border-bottom: 1px solid var(--border-2);
+  background: none;
+  cursor: pointer;
+  text-align: start;
+  font-family: inherit;
+  color: var(--text);
+}
+
+.customer-picker__item:last-child {
+  border-bottom: none;
+}
+
+.customer-picker__item:hover,
+.customer-picker__item:focus-visible {
+  background: var(--surface-2);
+}
+
+.customer-picker__identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.customer-picker__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.customer-picker__name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.customer-picker__code {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-3);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.customer-picker__meta {
+  font-size: 11.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.customer-picker__stats {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.customer-picker__balance {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--danger);
+}
+
+.customer-picker__empty {
+  padding: 16px 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.customer-selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 13px;
+  background: var(--surface-2);
+}
+
+.customer-selected__name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.customer-selected__meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.pkg-editor-toolbar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 13px;
+}
+
+.pkg-editor {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 13px;
+}
+
+.pkg-editor__row {
+  display: grid;
+  grid-template-columns: 1.7fr 0.8fr 0.8fr 0.9fr 0.9fr 0.65fr 0.65fr 0.65fr 0.8fr 44px 44px 1.1fr 28px;
+  gap: 4px;
+  padding: 5px 6px;
+  border-bottom: 1px solid var(--border-2);
+  align-items: center;
+}
+
+.pkg-editor__head {
+  gap: 0;
+  padding: 0;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.pkg-editor__head > div {
+  padding: 4px 6px;
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: center;
+}
+
+.pkg-editor__foot {
+  gap: 0;
+  background: var(--surface-3);
+  font-weight: 800;
+  font-size: 12px;
+  padding: 6px;
+  border-bottom: none;
+}
+
+.pkg-editor__foot > div {
+  text-align: center;
+}
+
+.pkg-editor__foot > div:first-child {
+  text-align: start;
+}
+
+.pkg-editor .input {
+  padding: 5px 7px;
+  font-size: 12.5px;
+}
+
+.pkg-editor__volume {
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.pkg-editor__check {
+  margin: 0 auto;
+  cursor: pointer;
+  accent-color: var(--brand);
+}
+
+.pkg-editor__check--danger {
+  accent-color: var(--danger);
+}
+
+.pkg-editor__del {
+  border: none;
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-radius: 5px;
+  cursor: pointer;
+  height: 26px;
+}
+
+.pkg-editor__del:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  :host ::ng-deep .modal-body .grid-collapse {
+    grid-template-columns: 1fr !important;
+  }
+}

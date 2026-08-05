@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+:host ::ng-deep .modal {
+  max-width: 640px;
+}
+
+.form-error {
+  color: var(--danger);
+}
+
+.insurance-form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+@media (max-width: 640px) {
+  :host ::ng-deep .modal-body .grid-collapse {
+    grid-template-columns: 1fr !important;
+  }
+}

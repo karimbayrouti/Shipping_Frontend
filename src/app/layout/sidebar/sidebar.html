@@ -1,0 +1,61 @@
+<aside
+  class="sidebar no-print"
+  [class.is-open]="shellUi.sidebarOpen()"
+  [class.is-collapsed]="shellUi.sidebarCollapsed()"
+>
+  <div class="sidebar__brand">
+    <ui-brand-mark [height]="34" [compact]="shellUi.sidebarCollapsed()" />
+    @if (!shellUi.sidebarCollapsed()) {
+      <div class="sidebar__brand-copy">
+        <div class="sidebar__brand-name">{{ companyName() }}</div>
+        <div class="sidebar__brand-app">{{ appName() }}</div>
+      </div>
+    }
+  </div>
+  <nav class="sidebar__nav" [attr.aria-label]="label('التنقل الرئيسي', 'Main navigation')">
+    @for (group of groups; track group.titleEn) {
+      <div class="nav-group">
+        @if (!shellUi.sidebarCollapsed()) {
+          <div class="nav-group__title">{{ label(group.titleAr, group.titleEn) }}</div>
+        }
+        @for (item of group.items; track item.key) {
+          <a
+            class="navitem"
+            [routerLink]="item.route"
+            routerLinkActive="is-active"
+            [title]="label(item.labelAr, item.labelEn)"
+            (click)="closeDrawer()"
+          >
+            <span class="navitem__icon" aria-hidden="true">{{ item.icon }}</span>
+            @if (!shellUi.sidebarCollapsed()) {
+              <span class="navitem__label">{{ label(item.labelAr, item.labelEn) }}</span>
+              @if (item.badge) {
+                <span class="navitem__badge" [class.navitem__badge--danger]="item.danger">{{
+                  item.badge
+                }}</span>
+              }
+            }
+          </a>
+        }
+      </div>
+    }
+  </nav>
+  <div class="sidebar__footer">
+    <a class="sidebar__footer-btn" routerLink="/portal/driver" (click)="closeDrawer()"
+      ><span>🧑‍✈️</span>
+      @if (!shellUi.sidebarCollapsed()) {
+        {{ label('فتح بوابة السائق', 'Open Driver Portal') }}
+      }
+    </a>
+    <button
+      type="button"
+      class="sidebar__collapse-btn"
+      (click)="shellUi.sidebarCollapsed.update((value) => !value)"
+    >
+      <span>{{ shellUi.sidebarCollapsed() ? '‹' : '›' }}</span>
+      @if (!shellUi.sidebarCollapsed()) {
+        {{ label('طي القائمة', 'Collapse') }}
+      }
+    </button>
+  </div>
+</aside>

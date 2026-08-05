@@ -1,0 +1,120 @@
+<div class="login">
+  <!-- Brand panel -->
+  <div class="login__brand no-print">
+    <div class="login__dots"></div>
+    <div class="login__brand-head">
+      <ui-brand-mark [height]="56" />
+      <div>
+        <div class="login__brand-name">{{ rtl() ? company.nameAr : company.nameEn }}</div>
+        <div class="login__brand-app">{{ t().appName }}</div>
+      </div>
+    </div>
+    <div class="login__brand-mid">
+      <div class="login__welcome">{{ t().welcomeBack }}</div>
+      <div class="login__tagline">{{ t().appTagline }}</div>
+      <div class="login__features">
+        @for (f of features; track f.label) {
+          <div class="login__feature">
+            <span class="login__feature-icon">{{ f.icon }}</span>
+            <span class="login__feature-label">{{ f.label }}</span>
+          </div>
+        }
+      </div>
+    </div>
+    <div class="login__brand-foot">
+      <span
+        >© {{ year }} {{ rtl() ? company.nameAr : company.nameEn }} ·
+        {{ t().allRightsReserved }}</span
+      >
+      <span>{{ t().versionLabel }} {{ version }}</span>
+    </div>
+  </div>
+
+  <!-- Form panel -->
+  <div class="login__form">
+    <div class="login__form-head">
+      <span class="login__title">{{ mode() === 'staff' ? t().signIn : t().customerPortal }}</span>
+      <button type="button" class="login__lang" (click)="lang.toggle()">🌐 {{ t().lang }}</button>
+    </div>
+
+    <!-- Staff / Customer segmented toggle -->
+    <div class="login__tabs">
+      <button
+        type="button"
+        class="login__tab"
+        [class.login__tab--active]="mode() === 'staff'"
+        (click)="mode.set('staff')"
+      >
+        🛡️ {{ t().staffLogin }}
+      </button>
+      <button
+        type="button"
+        class="login__tab"
+        [class.login__tab--active]="mode() === 'customer'"
+        (click)="mode.set('customer')"
+      >
+        📦 {{ t().customerLoginTab }}
+      </button>
+    </div>
+
+    @if (mode() === 'staff') {
+      <div class="login__hint">{{ t().loginHint }}</div>
+      <div class="login__roles">
+        @for (r of roles; track r.key) {
+          <button
+            type="button"
+            class="role-card"
+            [class.role-card--active]="role() === r.key"
+            (click)="role.set(r.key)"
+          >
+            <div class="role-card__icon">{{ r.icon }}</div>
+            <div class="role-card__label">{{ t()[r.labelKey] }}</div>
+            <div class="role-card__desc">{{ t()[r.descKey] }}</div>
+          </button>
+        }
+      </div>
+
+      @if (role() === 'warehouse') {
+        <div class="field">
+          <label class="field__label" for="login-warehouse">🏬 {{ t().assignedWarehouse }}</label>
+          <select
+            id="login-warehouse"
+            class="inp"
+            [value]="warehouseId()"
+            (change)="onWarehouseChange($event)"
+          >
+            @for (w of warehouses; track w.id) {
+              <option [value]="w.id">{{ rtl() ? w.nameAr : w.nameEn }}</option>
+            }
+          </select>
+          <div class="field__hint">{{ t().warehouseScopeHint }}</div>
+        </div>
+      }
+
+      <div class="field">
+        <label class="field__label" for="login-username">{{ t().username }}</label>
+        <input id="login-username" class="inp" [attr.value]="initialUser" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="login-password">{{ t().password }}</label>
+        <input id="login-password" class="inp" type="password" value="••••••••" />
+      </div>
+
+      <div class="login__meta">
+        <label class="login__remember">
+          <input type="checkbox" [checked]="remember()" (change)="onRememberChange($event)" />
+          {{ t().rememberMe }}
+        </label>
+        <button type="button" class="login__forgot">{{ t().forgotPassword }}</button>
+      </div>
+
+      <button type="button" class="btn btn--primary btn--full" (click)="signIn()">
+        {{ t().loginAs }} {{ t()[selectedRole().labelKey] }} →
+      </button>
+    } @else {
+      <app-customer-auth />
+    }
+
+    <div class="login__version">{{ t().versionLabel }} {{ version }} · © {{ year }}</div>
+  </div>
+</div>

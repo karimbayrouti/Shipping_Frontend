@@ -1,0 +1,85 @@
+<div class="tbl-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>{{ text().plateNumber }}</th>
+        <th>{{ text().vehicleType }}</th>
+        <th>{{ text().vehicleColor }}</th>
+        <th>{{ text().capacityKg }}</th>
+        <th>{{ text().driver }}</th>
+        <th>{{ text().licenseExpiry }}</th>
+        <th>{{ text().insuranceStatus }}</th>
+        <th>{{ text().maintenanceCosts }}</th>
+        <th>{{ text().status }}</th>
+        <th>{{ text().actions }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (truck of rows(); track truck.id) {
+        <tr class="row" style="cursor: pointer" (click)="onRowClick(truck)">
+          <td>
+            <b>{{ truck.plateNumber }}</b>
+          </td>
+          <td>{{ truck.vehicleType }}</td>
+          <td>{{ truck.vehicleColor }}</td>
+          <td>{{ formatCapacity(truck.capacityKg) }}</td>
+          <td>{{ truck.driverName ?? '—' }}</td>
+          <td>
+            <span style="color: var(--text-2)">{{ truck.licenseExpiry }}</span>
+          </td>
+          <td>
+            @if (truck.insurance; as ins) {
+              @if (ins.state === 'expired') {
+                <span class="insurance insurance--expired">
+                  🛡 {{ ins.count }} · {{ text().expired }}
+                </span>
+              } @else {
+                <span class="insurance insurance--warn">
+                  🛡 {{ ins.count }} · {{ ins.nearestExpiry }}
+                </span>
+              }
+            } @else {
+              <span style="color: var(--faint)">—</span>
+            }
+          </td>
+          <td>
+            <span class="maintenance-cost">{{ formatCost(truck.maintenanceCostEgp) }}</span>
+          </td>
+          <td>
+            <span class="status-badge" [attr.data-status]="truck.status">
+              {{ statusLabel(truck.status, text()) }}
+            </span>
+          </td>
+          <td>
+            <div class="row-actions">
+              <button
+                type="button"
+                class="btn btn--ghost btn--small"
+                (click)="onHistoryClick($event, truck)"
+              >
+                🔧 {{ text().vehicleHistory }}
+              </button>
+              <button
+                type="button"
+                class="btn btn--secondary btn--small"
+                (click)="onEditClick($event, truck)"
+              >
+                {{ text().edit }}
+              </button>
+            </div>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="10">
+            <div class="empty-state empty-state--compact">
+              <div class="empty-state__icon">🚚</div>
+              <div class="empty-state__title">{{ text().noResults }}</div>
+              <div class="empty-state__hint">{{ text().noResultsHint }}</div>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

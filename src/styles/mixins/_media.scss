@@ -1,0 +1,25 @@
+@use 'tokens/breakpoints' as bp;
+
+// The only sanctioned way to write a media query.
+//   @include respond-to(md) { … }   → applies from that width and UP (mobile-first).
+@mixin respond-to($size) {
+  @if $size == sm {
+    @media (min-width: bp.$breakpoint-sm) {
+      @content;
+    }
+  } @else if $size == md {
+    @media (min-width: bp.$breakpoint-md) {
+      @content;
+    }
+  } @else if $size == lg {
+    @media (min-width: bp.$breakpoint-lg) {
+      @content;
+    }
+  } @else if $size == xl {
+    @media (min-width: bp.$breakpoint-xl) {
+      @content;
+    }
+  } @else {
+    @error "Unknown breakpoint `#{$size}`. Use: sm | md | lg | xl.";
+  }
+}

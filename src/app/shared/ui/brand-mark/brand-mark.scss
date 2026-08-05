@@ -1,0 +1,18 @@
+:host {
+  display: inline-block;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.frame {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+
+img {
+  position: absolute;
+  // Physical left/top on purpose: the crop offsets address pixels inside the
+  // bitmap and are direction-independent (the prototype does the same).
+  max-inline-size: none;
+}

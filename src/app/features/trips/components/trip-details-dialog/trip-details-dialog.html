@@ -1,0 +1,465 @@
+<ui-dialog
+  [title]="'🚛 ' + trip().tripNo"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <div dialogHeaderExtra class="modal__sub" style="display: flex; gap: 8px; align-items: center">
+    <span class="status-badge" [attr.data-status]="trip().status">{{
+      statusLabel(trip().status)
+    }}</span>
+    <span style="font-size: 12px; color: var(--muted)"
+      >📄 {{ text().detailsWaybillLabel }}: {{ trip().waybillNo }}</span
+    >
+  </div>
+
+  <div class="section-title">
+    <span class="section-title__icon">🗺</span
+    ><span class="section-title__text">{{ text().secSchedule }}</span
+    ><span class="section-title__rule"></span>
+  </div>
+  <div class="meta-grid grid-collapse">
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaOriginDestination }}</div>
+      <div class="meta-item__value">{{ trip().originCity }} → {{ trip().destinationCountry }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaWaybillCreated }}</div>
+      <div class="meta-item__value">{{ trip().waybillCreatedDate ?? '—' }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaTripStart }}</div>
+      <div class="meta-item__value">{{ trip().tripStartDate }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().formExpectedDeparture }}</div>
+      <div class="meta-item__value">{{ trip().expectedDeparture }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaActualDeparture }}</div>
+      <div class="meta-item__value" [style.color]="trip().actualDeparture ? 'var(--ok)' : null">
+        {{ trip().actualDeparture ?? '—' }}
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().formExpectedArrival }}</div>
+      <div class="meta-item__value">{{ trip().expectedArrival }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaActualArrival }}</div>
+      <div class="meta-item__value">{{ trip().actualArrival ?? '—' }}</div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <span class="section-title__icon">🚚</span
+    ><span class="section-title__text">{{ text().secAssignment }}</span
+    ><span class="section-title__rule"></span>
+  </div>
+  <div class="meta-grid grid-collapse">
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaResponsibleDriver }}</div>
+      <div class="meta-item__value">{{ trip().driverName }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaTruck }}</div>
+      <div class="meta-item__value">{{ trip().truckPlate }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaDriverAdvance }}</div>
+      <div
+        class="meta-item__value"
+        [style.color]="trip().driverAdvanceIssued ? 'var(--ok)' : 'var(--warn)'"
+      >
+        {{ trip().driverAdvance.toLocaleString('en-US') }}
+        @if (trip().driverAdvanceIssued) {
+          ✓
+        }
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaLoadedQty }}</div>
+      <div class="meta-item__value" style="color: var(--ok)">
+        {{ rows().length }}/{{ trip().shipmentIds.length }} {{ text().shipmentsUnit }}
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <span class="section-title__icon">💰</span
+    ><span class="section-title__text">{{ text().secProfitability }}</span
+    ><span class="section-title__rule"></span>
+  </div>
+  <div class="meta-grid meta-grid--3 grid-collapse">
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaTotalRevenue }}</div>
+      <div class="meta-item__value" style="color: var(--ok)">
+        ≈ {{ trip().totalRevenue.toLocaleString('en-US') }}
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaExpenses }}</div>
+      <div class="meta-item__value" style="color: var(--danger)">
+        ≈ {{ trip().totalExpenses.toLocaleString('en-US') }}
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaProfit }}</div>
+      <div class="meta-item__value" style="color: var(--ok)">
+        ≈ {{ (trip().totalRevenue - trip().totalExpenses).toLocaleString('en-US') }}
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <span class="section-title__icon">📎</span
+    ><span class="section-title__text">{{ text().secDocuments }}</span
+    ><span class="section-title__rule"></span>
+  </div>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px">
+    <button type="button" class="btn btn--ghost btn--small" (click)="printWaybillRequested.emit()">
+      {{ text().docWaybill }}
+    </button>
+    <button type="button" class="btn btn--ghost btn--small" (click)="printManifestRequested.emit()">
+      {{ text().docManifest }}
+    </button>
+    <button
+      type="button"
+      class="btn btn--ghost btn--small"
+      (click)="printAdvanceReceiptRequested.emit()"
+    >
+      {{ text().docAdvanceReceipt }}
+    </button>
+  </div>
+
+  <div class="section-title">
+    <span class="section-title__icon">🖨</span
+    ><span class="section-title__text">{{ text().secPrinting }}</span
+    ><span class="section-title__rule"></span>
+  </div>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px">
+    <button
+      type="button"
+      class="btn btn--secondary btn--small"
+      (click)="printManifestRequested.emit()"
+    >
+      {{ text().printManifest }}
+    </button>
+    <button
+      type="button"
+      class="btn btn--secondary btn--small"
+      (click)="printAllWaybillsRequested.emit()"
+    >
+      {{ text().printAllWaybills }}
+    </button>
+    <button
+      type="button"
+      class="btn btn--secondary btn--small"
+      [disabled]="selectedCount() === 0"
+      (click)="requestSelectedWaybills()"
+    >
+      {{ text().printSelectedWaybills }}
+      @if (selectedCount() > 0) {
+        ({{ selectedCount() }})
+      }
+    </button>
+    <button
+      type="button"
+      class="btn btn--secondary btn--small"
+      (click)="printReceiptsRequested.emit()"
+    >
+      {{ text().printReceipts }}
+    </button>
+    <span style="font-size: 11px; color: var(--muted)">{{ text().printSelectHint }}</span>
+  </div>
+
+  <div class="tabs">
+    <button
+      type="button"
+      class="tabs__tab"
+      [class.is-active]="activeTab() === 'shipments'"
+      (click)="setTab('shipments')"
+    >
+      {{ text().tabShipments }}
+    </button>
+    <button
+      type="button"
+      class="tabs__tab"
+      [class.is-active]="activeTab() === 'fieldOps'"
+      (click)="setTab('fieldOps')"
+    >
+      {{ text().tabFieldOps }}
+    </button>
+    <button
+      type="button"
+      class="tabs__tab"
+      [class.is-active]="activeTab() === 'collections'"
+      (click)="setTab('collections')"
+    >
+      {{ text().tabCollections }}
+    </button>
+    <button
+      type="button"
+      class="tabs__tab"
+      [class.is-active]="activeTab() === 'expenses'"
+      (click)="setTab('expenses')"
+    >
+      {{ text().tabExpenses }}
+    </button>
+    <button
+      type="button"
+      class="tabs__tab"
+      [class.is-active]="activeTab() === 'log'"
+      (click)="setTab('log')"
+    >
+      {{ text().tabLog }}
+    </button>
+  </div>
+
+  @if (activeTab() === 'shipments') {
+    @if (outboundRows().length > 0) {
+      <div class="dir-group">
+        <div class="dir-group__head">
+          <span>{{ text().directionOutboundLabel }}</span
+          ><span class="dir-group__count"
+            >{{ outboundRows().length }} {{ text().shipmentsUnit }}</span
+          >
+        </div>
+        @for (row of outboundRows(); track row.id) {
+          <div
+            class="trip-ship-row row"
+            tabindex="0"
+            (click)="shipmentClicked.emit(row.id)"
+            (keyup.enter)="shipmentClicked.emit(row.id)"
+          >
+            <div>
+              <input
+                type="checkbox"
+                [attr.title]="text().printSelectedWaybills"
+                (click)="$event.stopPropagation()"
+                (change)="toggleSelected(row.id, $any($event.target).checked)"
+              />
+              <span style="font-weight: 600">{{ row.shipmentNo }}</span>
+              <span class="trip-ship-row__meta">
+                · 👤 {{ row.customerName }} · {{ row.counterpartyName }}</span
+              >
+              <span class="trip-ship-row__meta" style="font-size: 11.5px">
+                · 📤 {{ row.originCity }} ← 📥 {{ row.destinationCity }} · {{ row.packageCount }}
+                {{ text().colPackages }}</span
+              >
+            </div>
+            <div class="trip-ship-row__end">
+              <span class="trip-ship-row__charge">{{ row.chargeLabel }}</span>
+              <span class="status-badge" [attr.data-status]="row.statusKey">{{
+                row.statusLabel
+              }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+    @if (inboundRows().length > 0) {
+      <div class="dir-group">
+        <div class="dir-group__head">
+          <span>{{ text().directionInboundLabel }}</span
+          ><span class="dir-group__count"
+            >{{ inboundRows().length }} {{ text().shipmentsUnit }}</span
+          >
+        </div>
+        @for (row of inboundRows(); track row.id) {
+          <div
+            class="trip-ship-row row"
+            tabindex="0"
+            (click)="shipmentClicked.emit(row.id)"
+            (keyup.enter)="shipmentClicked.emit(row.id)"
+          >
+            <div>
+              <input
+                type="checkbox"
+                [attr.title]="text().printSelectedWaybills"
+                (click)="$event.stopPropagation()"
+                (change)="toggleSelected(row.id, $any($event.target).checked)"
+              />
+              <span style="font-weight: 600">{{ row.shipmentNo }}</span>
+              <span class="trip-ship-row__meta">
+                · 👤 {{ row.customerName }} · {{ row.counterpartyName }}</span
+              >
+              <span class="trip-ship-row__meta" style="font-size: 11.5px">
+                · 📤 {{ row.originCity }} ← 📥 {{ row.destinationCity }} · {{ row.packageCount }}
+                {{ text().colPackages }}</span
+              >
+            </div>
+            <div class="trip-ship-row__end">
+              <span class="trip-ship-row__charge">{{ row.chargeLabel }}</span>
+              <span class="status-badge" [attr.data-status]="row.statusKey">{{
+                row.statusLabel
+              }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+
+  @if (activeTab() === 'fieldOps') {
+    @if (trip().fieldOps; as ops) {
+      <div class="meta-grid meta-grid--3 grid-collapse">
+        <div class="meta-item">
+          <div class="meta-item__label">{{ text().fieldOpsDuration }}</div>
+          <div class="meta-item__value">{{ ops.durationLabel }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">{{ text().fieldOpsDriving }}</div>
+          <div class="meta-item__value">{{ ops.drivingTimeLabel }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">{{ text().fieldOpsFuel }}</div>
+          <div class="meta-item__value">{{ ops.fuelTimeLabel }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">{{ text().fieldOpsStops }}</div>
+          <div class="meta-item__value">{{ ops.stopsCount }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">{{ text().fieldOpsIdle }}</div>
+          <div class="meta-item__value">{{ ops.idleTimeLabel }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">{{ text().fieldOpsAvgDelivery }}</div>
+          <div class="meta-item__value">{{ ops.avgDeliveryTimeLabel }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">{{ text().fieldOpsArrivalPerf }}</div>
+          <div class="meta-item__value">{{ arrivalPerformanceLabel() }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">{{ text().fieldOpsDistance }}</div>
+          <div class="meta-item__value">{{ ops.distanceKmLabel }}</div>
+        </div>
+      </div>
+    }
+    <div class="section-title" style="margin-top: 14px">
+      <span class="section-title__icon">🕓</span
+      ><span class="section-title__text">{{ text().activityLogTitle }}</span
+      ><span class="section-title__rule"></span>
+    </div>
+    @for (entry of trip().activityLog; track $index) {
+      <div class="trip-ship-row" style="cursor: default">
+        <div>
+          <span>{{ entry.icon }}</span>
+          <b style="margin-inline-start: 6px">{{ entry.message }}</b>
+          @if (entry.detail) {
+            <div class="trip-ship-row__meta" style="font-size: 11.5px">{{ entry.detail }}</div>
+          }
+          <div class="trip-ship-row__meta" style="font-size: 11px">{{ entry.actor }}</div>
+        </div>
+        <span class="trip-ship-row__meta" style="font-size: 11px">{{ entry.time }}</span>
+      </div>
+    }
+  }
+
+  @if (activeTab() === 'collections') {
+    @if (trip().collections.length === 0) {
+      <p style="color: var(--muted); font-size: 13px; padding: 16px 0; text-align: center">
+        {{ text().collectionsNone }}
+      </p>
+    } @else {
+      <div class="tbl-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>{{ text().advanceReceiptDate }}</th>
+              <th>{{ text().colCustomer }}</th>
+              <th>{{ text().colShipmentNo }}</th>
+              <th>{{ text().colAmount }}</th>
+              <th>{{ text().colPaymentMethod }}</th>
+              <th>{{ text().colCollectionLocation }}</th>
+              <th>{{ text().colCollectedBy }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (entry of trip().collections; track $index) {
+              <tr>
+                <td>{{ entry.time }}</td>
+                <td>{{ entry.customerName }}</td>
+                <td>{{ entry.shipmentNo }}</td>
+                <td style="color: var(--ok)">
+                  {{ entry.amount.toLocaleString('en-US') }} {{ entry.currency }}
+                </td>
+                <td>{{ entry.paymentMethod }}</td>
+                <td>{{ entry.location }}</td>
+                <td>{{ entry.collectedBy }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  @if (activeTab() === 'expenses') {
+    @if (trip().expenses.length === 0) {
+      <p style="color: var(--muted); font-size: 13px; padding: 16px 0; text-align: center">
+        {{ text().expensesNone }}
+      </p>
+    } @else {
+      <div class="tbl-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>{{ text().colCategory }}</th>
+              <th>{{ text().colAmount }}</th>
+              <th>{{ text().advanceReceiptDate }}</th>
+              <th>{{ text().colDriver }}</th>
+              <th>{{ text().colNotes }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (entry of trip().expenses; track $index) {
+              <tr>
+                <td>{{ entry.icon }} {{ entry.category }}</td>
+                <td style="color: var(--danger)">
+                  {{ entry.amount.toLocaleString('en-US') }} {{ entry.currency }}
+                </td>
+                <td>{{ entry.date }}</td>
+                <td>{{ entry.driver }}</td>
+                <td>{{ entry.note }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  @if (activeTab() === 'log') {
+    @for (entry of trip().activityLog; track $index) {
+      <div class="trip-ship-row" style="cursor: default">
+        <div>
+          <span>{{ entry.icon }}</span>
+          <b style="margin-inline-start: 6px">{{ entry.message }}</b>
+          @if (entry.detail) {
+            <div class="trip-ship-row__meta" style="font-size: 11.5px">{{ entry.detail }}</div>
+          }
+          <div class="trip-ship-row__meta" style="font-size: 11px">{{ entry.actor }}</div>
+        </div>
+        <span class="trip-ship-row__meta" style="font-size: 11px">{{ entry.time }}</span>
+      </div>
+    }
+  }
+
+  <div dialogActions>
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().close }}
+    </button>
+    @if (showConfirmArrival()) {
+      <button type="button" class="btn btn--warning" (click)="confirmArrivalRequested.emit()">
+        {{ text().confirmArrivalAction }}
+      </button>
+    }
+    @if (showSettle()) {
+      <button type="button" class="btn btn--success" (click)="settleRequested.emit()">
+        {{ text().settleAction }}
+      </button>
+    }
+  </div>
+</ui-dialog>

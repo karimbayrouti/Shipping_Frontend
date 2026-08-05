@@ -1,0 +1,11 @@
+@if (current(); as toast) {
+  <div
+    class="toast"
+    [class.toast--success]="toast.tone === 'success'"
+    [class.toast--danger]="toast.tone === 'danger'"
+    role="status"
+  >
+    <span>{{ toast.message }}</span>
+    <button type="button" class="toast__close" (click)="dismiss()">×</button>
+  </div>
+}

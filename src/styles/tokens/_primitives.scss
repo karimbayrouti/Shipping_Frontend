@@ -1,0 +1,83 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 1 — PRIMITIVE TOKENS (raw scales, no meaning, theme-independent)
+// Components must NEVER read these directly; they consume the semantic layer
+// (styles/themes/*). Primitives change only when the design language changes.
+// Charter AD-22 / Design System Guide.
+// ─────────────────────────────────────────────────────────────────────────────
+:root {
+  // ── Color ramps (compact 5-step ramps; extend only when a real need appears)
+  --gray-50: #f7f7f8;
+  --gray-100: #ededf0;
+  --gray-300: #c9c9d1;
+  --gray-500: #71717d;
+  --gray-700: #3d3d46;
+  --gray-900: #1b1b21;
+
+  --blue-100: #dbe7fe;
+  --blue-300: #8fb4fb;
+  --blue-500: #3b6ff5;
+  --blue-700: #2549b8;
+  --blue-900: #1a2f70;
+
+  --green-100: #d3f4e0;
+  --green-500: #14985c;
+  --green-700: #0d6b41;
+
+  --amber-100: #fdeecb;
+  --amber-500: #d97706;
+  --amber-700: #92500a;
+
+  --red-100: #fde2e2;
+  --red-500: #dc2626;
+  --red-700: #991b1b;
+
+  --sky-100: #d9f0fa;
+  --sky-500: #0284c7;
+  --sky-700: #075e85;
+
+  // ── Spacing (4px base grid; use the scale, never arbitrary px)
+  --space-1: 0.25rem; // 4
+  --space-2: 0.5rem; // 8
+  --space-3: 0.75rem; // 12
+  --space-4: 1rem; // 16
+  --space-5: 1.5rem; // 24
+  --space-6: 2rem; // 32
+  --space-7: 3rem; // 48
+  --space-8: 4rem; // 64
+
+  // ── Typography (system stack: fast, RTL-safe, no font licensing)
+  --font-sans:
+    'Segoe UI', 'Cairo', Tahoma, system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Cascadia Code', Consolas, 'Courier New', monospace;
+
+  --text-xs: 0.75rem; // 12
+  --text-sm: 0.8125rem; // 13
+  --text-base: 0.875rem; // 14 — ERP density default
+  --text-lg: 1rem; // 16
+  --text-xl: 1.25rem; // 20
+  --text-2xl: 1.5rem; // 24
+
+  --weight-regular: 400;
+  --weight-medium: 600;
+  --weight-bold: 700;
+
+  --leading-tight: 1.3;
+  --leading-normal: 1.55;
+
+  // ── Radius
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 999px;
+
+  // ── Elevation (shadows tuned for light surfaces; dark theme overrides)
+  --shadow-1: 0 1px 2px rgb(16 18 24 / 0.06);
+  --shadow-2: 0 2px 8px rgb(16 18 24 / 0.1);
+  --shadow-3: 0 8px 28px rgb(16 18 24 / 0.16);
+
+  // ── Motion
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --easing-standard: cubic-bezier(0.2, 0, 0, 1);
+}

@@ -1,0 +1,87 @@
+// Form controls of the login screen — a 1:1 port of the prototype's UI
+// primitives (`inp`, `Field`, `Btn` + the input/btn rules of GlobalStyles in
+// App.tsx). Emitted as a mixin so LoginPage and CustomerAuth each include one
+// scoped copy. All values consume the prototype tokens set on the page :host.
+
+@mixin auth-controls {
+  .field {
+    margin-bottom: 13px;
+  }
+
+  .field__label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    margin-bottom: 5px;
+  }
+
+  .field__hint {
+    font-size: 11px;
+    color: var(--faint);
+    margin-top: 4px;
+  }
+
+  .inp {
+    width: 100%;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+    font-family: inherit;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+
+    &::placeholder {
+      color: var(--faint);
+    }
+
+    &:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px var(--brand-soft);
+    }
+  }
+
+  .btn {
+    // The prototype never gives <button> a font-family, so its buttons render
+    // in the browser default (Arial) while text elements use Cairo. Pinned
+    // here because the platform reset would otherwise hand buttons Cairo.
+    font-family: Arial, sans-serif;
+    padding: 9px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition:
+      filter 0.15s ease,
+      transform 0.05s ease,
+      box-shadow 0.15s ease;
+
+    &:hover:not(:disabled) {
+      filter: brightness(0.97);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+  }
+
+  .btn--primary {
+    background: var(--brand);
+    color: var(--brand-ink);
+    border: 1px solid var(--brand);
+  }
+
+  .btn--full {
+    width: 100%;
+  }
+}

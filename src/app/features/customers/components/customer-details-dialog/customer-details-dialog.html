@@ -1,0 +1,43 @@
+<ui-dialog
+  [title]="text().details"
+  [subtitle]="customer().name"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <div class="info-row">
+    <span class="info-row__label">{{ text().customerCode }}</span
+    ><strong>{{ customerCode() }}</strong>
+  </div>
+  <div class="info-row">
+    <span class="info-row__label">{{ text().phone }}</span
+    ><span>{{ customer().phone }}</span>
+  </div>
+  <div class="info-row">
+    <span class="info-row__label">{{ text().email }}</span
+    ><span>{{ customer().email || '—' }}</span>
+  </div>
+  <div class="info-row">
+    <span class="info-row__label">{{ text().city }}</span
+    ><span>{{ customer().city }}</span>
+  </div>
+  <div class="info-row">
+    <span class="info-row__label">{{ text().governorate }}</span
+    ><span>{{ customer().governorate }}</span>
+  </div>
+  <div class="info-row">
+    <span class="info-row__label">{{ text().country }}</span
+    ><span>{{ customer().country }}</span>
+  </div>
+  <div class="info-row">
+    <span class="info-row__label">{{ text().notes }}</span
+    ><span>{{ customer().notes || '—' }}</span>
+  </div>
+  <div dialogActions>
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().close }}
+    </button>
+    <button type="button" class="btn btn--primary" (click)="editRequested.emit(customer())">
+      {{ text().edit }}
+    </button>
+  </div>
+</ui-dialog>

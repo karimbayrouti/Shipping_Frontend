@@ -1,0 +1,162 @@
+<ui-dialog
+  [title]="text().departureTitle + ' — ' + summary().trip.tripNo"
+  [subtitle]="text().departureSubtitle"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <div class="section-title">
+    <span class="section-title__icon">🚚</span
+    ><span class="section-title__text">{{ text().secAssignment }}</span
+    ><span class="section-title__rule"></span>
+  </div>
+  <div class="meta-grid meta-grid--3 grid-collapse">
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().colTruck }}</div>
+      <div class="meta-item__value">{{ summary().trip.truckPlate }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().colDriver }}</div>
+      <div class="meta-item__value">{{ summary().trip.driverName }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().colTripNo }}</div>
+      <div class="meta-item__value">
+        {{ summary().trip.tripNo }} · {{ summary().trip.waybillNo }}
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <span class="section-title__icon">📦</span
+    ><span class="section-title__text">{{ text().loadedShipmentsTitle }}</span
+    ><span class="section-title__rule"></span>
+  </div>
+  <div class="meta-grid grid-collapse" style="margin-bottom: 10px">
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaShipments }}</div>
+      <div class="meta-item__value" [style.color]="hasNotLoaded() ? 'var(--warn)' : 'var(--ok)'">
+        {{ summary().loadedCount }} / {{ summary().trip.shipmentIds.length }}
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaPackages }}</div>
+      <div class="meta-item__value">{{ summary().totalPackages }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaWeightKg }}</div>
+      <div class="meta-item__value">{{ summary().totalWeightKg.toLocaleString('en-US') }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaVolume }}</div>
+      <div class="meta-item__value">—</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaCustomers }}</div>
+      <div class="meta-item__value">{{ summary().customerCount }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().metaDestinations }}</div>
+      <div class="meta-item__value">{{ summary().destinationCities.length }}</div>
+    </div>
+  </div>
+  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px">
+    @for (city of summary().destinationCities; track city) {
+      <span
+        style="
+          background: var(--surface-3);
+          border-radius: 99px;
+          padding: 4px 12px;
+          font-size: 12px;
+          font-weight: 700;
+          color: var(--text-2);
+        "
+        >📍 {{ city }}</span
+      >
+    }
+  </div>
+
+  <div class="section-title">
+    <span class="section-title__icon">💰</span
+    ><span class="section-title__text">{{ text().secFinancial }}</span
+    ><span class="section-title__rule"></span>
+  </div>
+  <div class="modal-cols-2 grid-collapse" style="margin-bottom: 14px">
+    <div>
+      <div style="font-size: 11.5px; font-weight: 800; color: var(--muted); margin-bottom: 6px">
+        {{ text().dueCollections }}
+      </div>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap">
+        @for (chip of summary().dueCollections; track chip.currency) {
+          <span
+            style="
+              background: var(--danger-soft);
+              border: 1px solid var(--border);
+              border-radius: 9px;
+              padding: 5px 11px;
+              font-size: 12.5px;
+              font-weight: 800;
+            "
+            >{{ chip.amount.toLocaleString('en-US') }} {{ chip.currency }}</span
+          >
+        }
+      </div>
+    </div>
+    <div>
+      <div style="font-size: 11.5px; font-weight: 800; color: var(--muted); margin-bottom: 6px">
+        {{ text().totalExpenses }}
+      </div>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap">
+        <span
+          style="
+            background: var(--warn-soft);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 5px 11px;
+            font-size: 12.5px;
+            font-weight: 800;
+          "
+          >{{ text().formDriverAdvance }}:
+          {{ summary().trip.driverAdvance.toLocaleString('en-US') }} EGP</span
+        >
+      </div>
+    </div>
+  </div>
+
+  @if (hasNotLoaded()) {
+    <div class="banner banner--warn">
+      <div class="banner__icon">🏗</div>
+      <div class="banner__body">
+        <div class="banner__title">
+          {{ summary().notLoadedShipmentNos.length }} {{ text().warnNotLoadedTitle }}
+        </div>
+        <div class="banner__text">{{ summary().notLoadedShipmentNos.join(' · ') }}</div>
+      </div>
+    </div>
+  }
+  @if (advancePending()) {
+    <div class="banner banner--danger">
+      <div class="banner__icon">⏳</div>
+      <div class="banner__body">
+        <div class="banner__title">{{ text().warnAdvancePendingTitle }}</div>
+        <div class="banner__text">{{ text().warnAdvancePendingText }}</div>
+      </div>
+    </div>
+  }
+
+  <div dialogActions>
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().close }}
+    </button>
+    <button type="button" class="btn btn--ghost" (click)="printManifestRequested.emit()">
+      {{ text().printManifest }}
+    </button>
+    <button
+      type="button"
+      class="btn btn--success"
+      [disabled]="!canDepart()"
+      (click)="confirmDepartRequested.emit()"
+    >
+      {{ text().confirmDepart }}
+    </button>
+  </div>
+</ui-dialog>

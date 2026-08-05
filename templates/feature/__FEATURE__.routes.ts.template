@@ -1,0 +1,10 @@
+import { Routes } from '@angular/router';
+
+export const __FEATURE__Routes: Routes = [
+  {
+    path: '',
+    title: '__Feature__ · Shipping Management',
+    loadComponent: () =>
+      import('./pages/__FEATURE__.page').then((m) => m.__Feature__Page),
+  },
+];

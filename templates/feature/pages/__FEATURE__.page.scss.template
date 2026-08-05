@@ -1,0 +1,1 @@
+// Page-specific prototype rules only. Shared prototype primitives are global.

@@ -1,0 +1,47 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 2 — SEMANTIC TOKENS, LIGHT THEME (the default).
+// Meaning mapped to primitives. Components consume ONLY these names.
+// The dark theme overrides the same names — never introduce a token in one
+// theme without defining it in the other.
+// ─────────────────────────────────────────────────────────────────────────────
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  // Brand & interaction
+  --color-primary: var(--blue-500);
+  --color-primary-hover: var(--blue-700);
+  --color-primary-soft: var(--blue-100);
+  --color-on-primary: #ffffff;
+
+  // Surfaces (page → raised → overlay)
+  --surface-page: var(--gray-50);
+  --surface-1: #ffffff;
+  --surface-2: var(--gray-100);
+  --surface-3: var(--gray-300);
+
+  // Text
+  --text-1: var(--gray-900);
+  --text-2: var(--gray-700);
+  --text-3: var(--gray-500);
+  --text-disabled: var(--gray-300);
+
+  // Borders & focus
+  --border-1: var(--gray-300);
+  --border-2: var(--gray-100);
+  --focus-ring: var(--blue-300);
+
+  // Status (always paired: strong + soft background)
+  --status-success: var(--green-500);
+  --status-success-soft: var(--green-100);
+  --status-warning: var(--amber-500);
+  --status-warning-soft: var(--amber-100);
+  --status-danger: var(--red-500);
+  --status-danger-soft: var(--red-100);
+  --status-info: var(--sky-500);
+  --status-info-soft: var(--sky-100);
+
+  // Validation (forms) — semantically distinct from status even if same hues
+  --validation-error: var(--red-500);
+  --validation-error-soft: var(--red-100);
+}

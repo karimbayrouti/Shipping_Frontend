@@ -1,0 +1,69 @@
+:host {
+  display: block;
+}
+
+:host ::ng-deep .modal {
+  max-width: 920px;
+}
+
+[dialogActions] {
+  display: flex;
+  gap: 12px;
+}
+
+.data-table tbody tr.row {
+  cursor: pointer;
+}
+
+// Company / external truck toggle (matches the html prototype's `.mode-toggle`).
+.mode-toggle {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 13px;
+}
+.mode-toggle__btn {
+  flex: 1;
+  padding: 9px 10px;
+  border-radius: 9px;
+  border: none;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 800;
+  background: transparent;
+  color: var(--muted);
+  font-family: inherit;
+}
+.mode-toggle__btn.is-active {
+  background: var(--surface);
+  color: var(--brand);
+  box-shadow: var(--shadow-sm);
+}
+
+// Auto totals cards (matches the html prototype's `.sum-card` row).
+.sum-cards {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.sum-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  flex: 1;
+  min-width: 120px;
+}
+.sum-card__label {
+  font-size: 11px;
+  color: var(--muted);
+}
+.sum-card__value {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+}

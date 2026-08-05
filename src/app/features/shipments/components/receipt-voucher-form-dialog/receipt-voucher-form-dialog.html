@@ -1,0 +1,107 @@
+<ui-dialog
+  [title]="'🧾 ' + text().createPaymentVoucher + ' — ' + shipmentCode()"
+  [subtitle]="text().newPayment"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <div class="section-title">
+    <span class="section-title__icon">💰</span>
+    <span class="section-title__text">{{ text().formSectionFinancialInfo }}</span>
+    <span class="section-title__rule"></span>
+  </div>
+  <div class="meta-grid meta-grid--3 grid-collapse">
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().formFinalValue }}</div>
+      <div class="meta-item__value">{{ formatMoney(shipment().finalValue) }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().paidAmount }}</div>
+      <div class="meta-item__value" style="color: var(--ok)">{{ formatMoney(paidAmount()) }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().colRemaining }}</div>
+      <div class="meta-item__value" style="color: var(--danger)">
+        {{ formatMoney(shipment().remainingBalance ?? 0) }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section__header">
+      <span class="form-section__icon">🧾</span>
+      <div>
+        <div class="form-section__title">{{ text().createPaymentVoucher }}</div>
+      </div>
+    </div>
+    <div class="form-section__body">
+      <form id="receipt-voucher-form" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-section__grid form-section__grid--2 grid-collapse">
+          <div class="field">
+            <label class="field__label" for="voucher-currency">{{ text().formCurrency }}</label>
+            <select id="voucher-currency" class="select" formControlName="currency">
+              @for (option of currencyOptions; track option.value) {
+                <option [value]="option.value">{{ resolvedCurrencyLabel(option) }}</option>
+              }
+            </select>
+          </div>
+          <div class="field">
+            <label class="field__label" for="voucher-amount">
+              {{ text().voucherAmount }} ({{ form.controls.currency.value }})
+            </label>
+            <input
+              data-dialog-initial-focus
+              id="voucher-amount"
+              class="input"
+              type="number"
+              formControlName="amount"
+            />
+          </div>
+          <div class="field">
+            <label class="field__label" for="voucher-method">{{
+              text().voucherPaymentMethod
+            }}</label>
+            <select id="voucher-method" class="select" formControlName="method">
+              @for (option of paymentMethodOptions; track option.value) {
+                <option [value]="option.value">{{ resolvedMethodLabel(option) }}</option>
+              }
+            </select>
+          </div>
+          <div class="field">
+            <label class="field__label" for="voucher-reference">{{
+              text().voucherReferenceNo
+            }}</label>
+            <input
+              id="voucher-reference"
+              class="input"
+              placeholder="—"
+              formControlName="referenceNo"
+            />
+          </div>
+          <div class="field">
+            <label class="field__label" for="voucher-received-by">{{
+              text().receivedByLabel
+            }}</label>
+            <input id="voucher-received-by" class="input" formControlName="receivedBy" />
+          </div>
+          <div class="field span-all">
+            <label class="field__label" for="voucher-notes">{{ text().colNotes }}</label>
+            <input id="voucher-notes" class="input" formControlName="notes" />
+          </div>
+          <label class="span-all voucher-print-toggle">
+            <input type="checkbox" formControlName="printAfterSave" />
+            <span>{{ text().voucherPrintAfterSave }}</span>
+          </label>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div dialogActions>
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().cancel }}
+    </button>
+    <button type="submit" form="receipt-voucher-form" class="btn btn--primary">
+      {{ text().save }}
+    </button>
+  </div>
+</ui-dialog>

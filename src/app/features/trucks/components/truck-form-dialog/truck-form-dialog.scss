@@ -1,0 +1,27 @@
+:host {
+  display: block;
+}
+
+// Max-width for this dialog — matches the prototype's style="max-width:620px".
+// Scoped via ::ng-deep which is safe here because :host is appended to <body>
+// at runtime, so there is no risk of leaking into other components.
+:host ::ng-deep .modal {
+  max-width: 620px;
+}
+
+.form-error {
+  color: var(--danger);
+}
+
+.truck-form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+// Collapse 2-col grids to 1 col on small screens (mirrors prototype base.css).
+@media (max-width: 640px) {
+  :host ::ng-deep .modal-body .grid-collapse {
+    grid-template-columns: 1fr !important;
+  }
+}

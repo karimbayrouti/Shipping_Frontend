@@ -1,0 +1,255 @@
+<ui-toast />
+
+<div class="page-hero">
+  <div class="page-hero__icon" style="background: var(--info)">🚛</div>
+  <div class="page-hero__body">
+    <h1 class="page-hero__title">{{ text().pageTitle }}</h1>
+    <div class="page-hero__desc">{{ text().pageDesc }}</div>
+  </div>
+  <button type="button" class="btn btn--primary" (click)="openForm()">
+    {{ text().createTrip }}
+  </button>
+</div>
+
+<div class="banner">
+  <div class="banner__icon">🚚</div>
+  <div class="banner__body">
+    <div class="banner__title">{{ activeTripsCount() }} {{ text().activeTripsTitle }}</div>
+    <div class="banner__text">
+      {{ awaitingDepartureCount() }} {{ text().activeTripsText }} {{ arrivedCount() }}
+    </div>
+  </div>
+  <div class="banner__right">
+    <div class="stat-rail">
+      <div class="stat-rail__item">
+        <div class="stat-rail__value" style="color: var(--sc-planned)">
+          {{ statCounts().planned }}
+        </div>
+        <div class="stat-rail__label">{{ text().statPlanned }}</div>
+      </div>
+      <div class="stat-rail__divider"></div>
+      <div class="stat-rail__item">
+        <div class="stat-rail__value" style="color: var(--sc-inProgress)">
+          {{ statCounts().inProgress }}
+        </div>
+        <div class="stat-rail__label">{{ text().statInProgress }}</div>
+      </div>
+      <div class="stat-rail__divider"></div>
+      <div class="stat-rail__item">
+        <div class="stat-rail__value" style="color: var(--sc-completed)">
+          {{ statCounts().completed }}
+        </div>
+        <div class="stat-rail__label">{{ text().statCompleted }}</div>
+      </div>
+      <div class="stat-rail__divider"></div>
+      <div class="stat-rail__item">
+        <div class="stat-rail__value" style="color: var(--sc-closed)">
+          {{ statCounts().closed }}
+        </div>
+        <div class="stat-rail__label">{{ text().statClosed }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="filter-bar">
+    <div class="search-bar">
+      <span class="search-bar__icon">🔍</span>
+      <input
+        class="input"
+        [placeholder]="text().search"
+        [ngModel]="query()"
+        (ngModelChange)="query.set($event)"
+      />
+    </div>
+    <select
+      class="select"
+      style="width: 150px"
+      [ngModel]="statusFilter()"
+      (ngModelChange)="statusFilter.set($event)"
+    >
+      <option value="all">{{ text().statusFilterAll }}</option>
+      <option value="planned">{{ text().statusPlanned }}</option>
+      <option value="inProgress">{{ text().statusInProgress }}</option>
+      <option value="arrived">{{ text().statusArrived }}</option>
+      <option value="completed">{{ text().statusCompleted }}</option>
+      <option value="closed">{{ text().statusClosed }}</option>
+      <option value="cancelled">{{ text().statusCancelled }}</option>
+    </select>
+  </div>
+
+  @if (filteredTrips().length === 0) {
+    <div style="padding: 40px 0; text-align: center; color: var(--muted)">
+      <div style="font-size: 13px; font-weight: 700">{{ text().noResults }}</div>
+      <div style="font-size: 12px; margin-top: 4px">{{ text().noResultsHint }}</div>
+    </div>
+  } @else {
+    <div class="tbl-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>{{ text().colTripNo }}</th>
+            <th>{{ text().colRoute }}</th>
+            <th>{{ text().colDriver }}</th>
+            <th>{{ text().colTruck }}</th>
+            <th>{{ text().colShipments }}</th>
+            <th>{{ text().colAdvance }}</th>
+            <th>{{ text().colStatus }}</th>
+            <th>{{ text().colActions }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (trip of filteredTrips(); track trip.id) {
+            <tr class="row" (click)="openDetails(trip.id)">
+              <td>
+                <div>
+                  <b>{{ trip.tripNo }}</b>
+                  <div style="font-size: 10px; color: var(--faint)">{{ trip.waybillNo }}</div>
+                </div>
+              </td>
+              <td>{{ trip.originCity }} → {{ trip.destinationCountry }}</td>
+              <td>{{ trip.driverName }}</td>
+              <td>{{ trip.truckPlate }}</td>
+              <td>{{ trip.shipmentIds.length }}</td>
+              <td>
+                @if (trip.driverAdvanceIssued) {
+                  <span style="color: var(--ok)"
+                    >{{ trip.driverAdvance.toLocaleString('en-US') }} ✓</span
+                  >
+                } @else {
+                  <span style="color: var(--faint)">{{
+                    trip.driverAdvance.toLocaleString('en-US')
+                  }}</span>
+                }
+              </td>
+              <td>
+                <span class="status-badge" [attr.data-status]="trip.status">{{
+                  statusLabel(trip.status)
+                }}</span>
+              </td>
+              <td (click)="$event.stopPropagation()">
+                <div style="display: flex; gap: 5px; flex-wrap: wrap">
+                  <button
+                    type="button"
+                    class="btn btn--ghost btn--small"
+                    (click)="openDetails(trip.id)"
+                  >
+                    {{ text().view }}
+                  </button>
+                  @if (trip.status === 'planned' && !trip.driverAdvanceIssued) {
+                    <button
+                      type="button"
+                      class="btn btn--warning btn--small"
+                      (click)="issueAdvance(trip.id)"
+                    >
+                      {{ text().issueAdvance }}
+                    </button>
+                  } @else if (trip.status === 'planned' && trip.driverAdvanceIssued) {
+                    <button
+                      type="button"
+                      class="btn btn--success btn--small"
+                      (click)="openDepartureSummary(trip.id)"
+                    >
+                      {{ text().departureSummary }}
+                    </button>
+                  } @else if (trip.status === 'inProgress') {
+                    <button
+                      type="button"
+                      class="btn btn--warning btn--small"
+                      (click)="confirmArrival(trip.id)"
+                    >
+                      {{ text().confirmArrival }}
+                    </button>
+                  } @else if (trip.status === 'completed') {
+                    <button
+                      type="button"
+                      class="btn btn--success btn--small"
+                      (click)="settleTrip()"
+                    >
+                      {{ text().settle }}
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+@if (isFormOpen()) {
+  <app-trip-form-dialog
+    [readyShipments]="readyPickableShipments()"
+    [text]="text()"
+    [nextTripNo]="nextTripNo()"
+    [nextWaybillNo]="nextWaybillNo()"
+    [busyDriverNames]="busyDriverNames()"
+    (closed)="closeForm()"
+    (saved)="onTripSaved($event)"
+  />
+}
+
+@if (detailsTrip(); as trip) {
+  <app-trip-details-dialog
+    [trip]="trip"
+    [rows]="detailsRows()"
+    [text]="text()"
+    (closed)="closeDetails()"
+    (shipmentClicked)="openShipmentDetails($event)"
+    (confirmArrivalRequested)="confirmArrival(trip.id); closeDetails()"
+    (settleRequested)="settleTrip()"
+    (printManifestRequested)="printManifest(trip.id)"
+    (printWaybillRequested)="printWaybill(trip.id)"
+    (printAllWaybillsRequested)="printAllWaybills(trip.id)"
+    (printSelectedWaybillsRequested)="printSelectedWaybills(trip.id, $event)"
+    (printReceiptsRequested)="printReceipts(trip.id)"
+    (printAdvanceReceiptRequested)="printAdvanceReceipt(trip.id)"
+  />
+}
+
+@if (departureSummary(); as summary) {
+  <app-departure-summary-dialog
+    [summary]="summary"
+    [text]="text()"
+    (closed)="closeDepartureSummary()"
+    (printManifestRequested)="printManifest(summary.trip.id)"
+    (confirmDepartRequested)="confirmDepart(summary.trip.id)"
+  />
+}
+
+@if (selectedShipmentDetails(); as details) {
+  <app-shipment-details-dialog
+    [details]="details"
+    [text]="shipmentsText()"
+    (closed)="closeShipmentDetails()"
+    (documentRequested)="onShipmentDocumentRequested($event)"
+  />
+}
+
+@if (manifestPrintData(); as data) {
+  <app-loading-manifest-dialog [data]="data" (closed)="manifestPrintData.set(null)" />
+}
+@if (waybillBatchPrintData(); as data) {
+  <app-waybill-batch-dialog [data]="data" (closed)="waybillBatchPrintData.set(null)" />
+}
+@if (receiptBatchPrintData(); as data) {
+  <app-receipt-batch-dialog [data]="data" (closed)="receiptBatchPrintData.set(null)" />
+}
+@if (receivingReceiptPrintData(); as data) {
+  <app-receiving-receipt-dialog [data]="data" (closed)="receivingReceiptPrintData.set(null)" />
+}
+@if (packingListPrintData(); as data) {
+  <app-packing-list-dialog [data]="data" (closed)="packingListPrintData.set(null)" />
+}
+@if (deliveryReceiptPrintData(); as data) {
+  <app-delivery-receipt-dialog [data]="data" (closed)="deliveryReceiptPrintData.set(null)" />
+}
+@if (waybillPrintData(); as data) {
+  <app-waybill-dialog [data]="data" (closed)="waybillPrintData.set(null)" />
+}
+@if (advanceReceiptPrintData(); as data) {
+  <app-advance-receipt-dialog [data]="data" (closed)="advanceReceiptPrintData.set(null)" />
+}

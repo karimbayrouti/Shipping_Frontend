@@ -1,0 +1,89 @@
+<div class="page-hero">
+  <div class="page-hero__icon" style="background: var(--info)">🧑‍💼</div>
+  <div class="page-hero__body">
+    <h1 class="page-hero__title">الموظفون</h1>
+    <div class="page-hero__desc">{{ employees().length }} الموظفون</div>
+  </div>
+  <button class="btn btn--primary" (click)="openForm()">＋ إضافة موظف</button>
+</div>
+
+<div class="card" style="margin-bottom: 18px">
+  <div style="padding: 16px 8px">
+    <div class="stat-rail">
+      <div class="stat-rail__item">
+        <div class="stat-rail__value">{{ employees().length }}</div>
+        <div class="stat-rail__label">الموظفون</div>
+      </div>
+      <div class="stat-rail__divider"></div>
+      <div class="stat-rail__item">
+        <div class="stat-rail__value" style="color: var(--info)">{{ driverCount() }}</div>
+        <div class="stat-rail__label">السائقون</div>
+      </div>
+      <div class="stat-rail__divider"></div>
+      <div class="stat-rail__item">
+        <div class="stat-rail__value" style="color: var(--ok)">{{ availableDriverCount() }}</div>
+        <div class="stat-rail__label">متاح</div>
+      </div>
+      <div class="stat-rail__divider"></div>
+      <div class="stat-rail__item">
+        <div class="stat-rail__value" style="color: var(--warn)">{{ onRoadDriverCount() }}</div>
+        <div class="stat-rail__label">في الطريق</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="filter-bar">
+    <div class="search-bar">
+      <span class="search-bar__icon">🔍</span>
+      <input class="input" placeholder="بحث..." (input)="onSearch($event)" />
+    </div>
+  </div>
+
+  <app-employee-table
+    [employees]="visibleEmployees()"
+    [sort]="sort()"
+    (sortChange)="changeSort($event)"
+    (rowClick)="openDetails($event)"
+    (editClick)="openForm($event)"
+  />
+
+  <div class="table-pagination">
+    <span
+      >{{ page() * pageSize + 1 }}–{{
+        Math.min((page() + 1) * pageSize, sortedEmployees().length)
+      }}
+      من {{ sortedEmployees().length }}</span
+    >
+    <div class="table-pagination__nav">
+      <button
+        class="page-btn icon-btn"
+        [disabled]="page() >= pageCount() - 1"
+        (click)="changePage(page() + 1)"
+      >
+        ›
+      </button>
+      <span class="table-pagination__page">{{ page() + 1 }} / {{ pageCount() }}</span>
+      <button class="page-btn icon-btn" [disabled]="page() <= 0" (click)="changePage(page() - 1)">
+        ‹
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (detailsEmployee(); as employee) {
+  <app-employee-details-dialog
+    [employee]="employee"
+    (closed)="closeDialog()"
+    (edit)="editFromDetails($event)"
+  />
+}
+
+@if (isFormOpen()) {
+  <app-employee-form-dialog
+    [employee]="formEmployee()"
+    (closed)="closeDialog()"
+    (saved)="saveEmployee($event)"
+  />
+}

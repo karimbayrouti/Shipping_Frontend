@@ -1,0 +1,39 @@
+:host {
+  display: block;
+}
+.sort-button {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+.customer-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.customer-name__value {
+  font-weight: 700;
+}
+.customer-name__code {
+  font-size: 11px;
+  color: var(--faint);
+}
+.money {
+  font-weight: 600;
+}
+.money--revenue {
+  color: var(--ok);
+}
+.money--balance {
+  color: var(--danger);
+}
+.row-actions {
+  display: flex;
+  gap: 5px;
+}
+.data-table tbody tr:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: -2px;
+}

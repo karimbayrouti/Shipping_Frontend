@@ -1,0 +1,170 @@
+<div
+  class="print-overlay"
+  role="presentation"
+  (click)="closed.emit()"
+  (keydown.escape)="closed.emit()"
+>
+  <div
+    class="doc-viewer fade-in"
+    dir="rtl"
+    role="dialog"
+    aria-modal="true"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+  >
+    <div class="doc-toolbar no-print">
+      <span class="doc-toolbar__title">بيان تحميل الشاحنة · {{ data().manifestNo }}</span>
+      <div class="doc-toolbar__actions">
+        <button type="button" class="btn btn--primary btn--small" (click)="print()">🖨 طباعة</button>
+        <button type="button" class="btn btn--secondary btn--small" (click)="closed.emit()">
+          إغلاق
+        </button>
+      </div>
+    </div>
+
+    <div class="paper-head">
+      <div class="paper-head__co">
+        <div class="paper-head__co-name">مؤسسة الرمــاح</div>
+        <div class="paper-head__co-sub">للتصدير وخدمات الشحن الدولي</div>
+        <div class="paper-head__co-mgr">م/ رماح عبد الحليم</div>
+      </div>
+      <div class="paper-head__title-wrap">
+        <div class="paper-head__title">بيان تحميل الشاحنة</div>
+        <div class="paper-head__title-en">Truck Loading Manifest</div>
+        <div class="paper-head__no">{{ data().manifestNo }}</div>
+      </div>
+      <div class="paper-head__ids">
+        <div class="qr-box">
+          <img src="assets/icons/qr-placeholder.svg" width="62" height="62" alt="QR" />
+        </div>
+        <span class="brand-mark" style="--bm-h: 44px">
+          <img src="assets/logos/el-ramah-logo.png" alt="El Ramah" />
+        </span>
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; gap: 14px; margin-bottom: 10px">
+      <div style="flex: 1">
+        <div style="font-weight: 800; color: #b91c1c; font-size: 12px; margin-bottom: 4px">
+          🚚 بيانات الشاحنة
+        </div>
+        <div style="font-size: 12px; line-height: 1.9">
+          <div>
+            <b>رقم اللوحة:</b> {{ data().truckPlate }} · <b>الموديل:</b> {{ data().truckModel }}
+          </div>
+          <div>
+            <b>اسم مالك السيارة:</b> {{ data().truckOwner }} · <b>السعة (كغ):</b>
+            {{ data().truckCapacityKg | number }} كغ
+          </div>
+        </div>
+      </div>
+      <div style="flex: 1">
+        <div style="font-weight: 800; color: #b91c1c; font-size: 12px; margin-bottom: 4px">
+          🧑‍✈️ بيانات السائق
+        </div>
+        <div style="font-size: 12px; line-height: 1.9">
+          <div>
+            <b>السائق:</b> {{ data().driverName }} · <b>الهاتف:</b>
+            <span dir="ltr">{{ data().driverPhone }}</span>
+          </div>
+          <div>
+            <b>رخصة القيادة:</b> {{ data().driverLicense }} · <b>الجواز:</b>
+            {{ data().driverPassport }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      style="
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
+        margin-bottom: 10px;
+        font-size: 12.5px;
+        background: #fafafa;
+        border: 1px solid #e7e7ea;
+        border-radius: 6px;
+        padding: 8px 12px;
+      "
+    >
+      <div><b>رقم الرحلة:</b> {{ data().tripNo }}</div>
+      <div><b>تاريخ التحميل:</b> {{ data().loadingDate }}</div>
+      <div><b>المستودع:</b> {{ data().warehouse }}</div>
+      <div><b>الوجهة:</b> {{ data().destination }}</div>
+      <div><b>الحالة:</b> {{ data().status }}</div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="doc-table" style="margin-bottom: 0">
+        <thead>
+          <tr>
+            <th>رقم الشحنة</th>
+            <th>العميل</th>
+            <th>مدينة الوجهة</th>
+            <th>الطرود</th>
+            <th>نوع الطرود</th>
+            <th>فئة البضاعة</th>
+            <th>الوزن (كغ)</th>
+            <th>الحجم (م³)</th>
+            <th>الأبعاد (سم)</th>
+            <th>ملاحظات</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of data().shipments; track row.shipmentNo) {
+            <tr>
+              <td>{{ row.shipmentNo }}</td>
+              <td>{{ row.clientName }}</td>
+              <td>{{ row.destinationCity }}</td>
+              <td>{{ row.packages }}</td>
+              <td>{{ row.packageType }}</td>
+              <td>{{ row.goodsCategory }}</td>
+              <td>{{ row.weightKg }}</td>
+              <td>{{ row.volumeM3 }}</td>
+              <td>{{ row.dimensionsCm }}</td>
+              <td>{{ row.notes }}</td>
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3">الإجمالي — {{ data().shipments.length }} شحنات</td>
+            <td>{{ totalPackages() }}</td>
+            <td></td>
+            <td></td>
+            <td>{{ totalWeightKg() }}</td>
+            <td>—</td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div style="margin-top: 10px; font-size: 13px; display: flex; gap: 18px; flex-wrap: wrap">
+      <span
+        ><b>إجمالي الإيراد:</b>
+        <span class="ink-ok" style="font-weight: 700">{{ data().totalRevenue }}</span></span
+      >
+      <span><b>عدد العملاء:</b> {{ data().shipments.length }}</span>
+    </div>
+
+    <div class="doc-footer">
+      <div class="doc-footer__sig">السائق</div>
+      <div class="doc-footer__sig">أمين المخزن</div>
+    </div>
+
+    <div class="barcode">
+      <img src="assets/icons/barcode-placeholder.svg" width="190" height="26" alt="barcode" />
+      <div class="barcode__text">{{ data().manifestNo }}</div>
+    </div>
+
+    <div class="paper-foot">
+      <div class="paper-foot__line">٣٢ شارع أفريقيا - امتداد مصطفى النحاس - عمارة ٣٢ بلوك ٢٢</div>
+      <div class="paper-foot__line">
+        موبايل <span dir="ltr">( 01124411119 - 01287790001 - 01228004363 - 01152581111 )</span>
+      </div>
+      <div class="paper-foot__line" dir="ltr">ElRamah@Gmail.com</div>
+    </div>
+  </div>
+</div>

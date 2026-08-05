@@ -1,0 +1,162 @@
+<div
+  class="print-overlay"
+  role="presentation"
+  (click)="closed.emit()"
+  (keydown.escape)="closed.emit()"
+>
+  <div
+    class="doc-viewer fade-in"
+    dir="rtl"
+    role="dialog"
+    aria-modal="true"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+  >
+    <div class="doc-toolbar no-print">
+      <span class="doc-toolbar__title">طباعة إيصالات الاستلام · {{ data().tripNo }}</span>
+      <div class="doc-toolbar__actions">
+        <button type="button" class="btn btn--primary btn--small" (click)="print()">🖨 طباعة</button>
+        <button type="button" class="btn btn--secondary btn--small" (click)="closed.emit()">
+          إغلاق
+        </button>
+      </div>
+    </div>
+
+    @for (receipt of data().receipts; track receipt.receiptNo; let last = $last) {
+      <div
+        class="doc-page"
+        [style.margin-bottom]="last ? '0' : '28px'"
+        [style.padding-bottom]="last ? '0' : '16px'"
+        [style.border-bottom]="last ? 'none' : '2px dashed #d1d1d5'"
+      >
+        <div class="paper-head">
+          <div class="paper-head__co">
+            <div class="paper-head__co-name">مؤسسة الرمــاح</div>
+            <div class="paper-head__co-sub">للتصدير وخدمات الشحن الدولي</div>
+            <div class="paper-head__co-mgr">م/ رماح عبد الحليم</div>
+          </div>
+          <div class="paper-head__title-wrap">
+            <div class="paper-head__title">إذن استلام</div>
+            <div class="paper-head__title-en">Receiving Receipt</div>
+            <div class="paper-head__no">{{ receipt.receiptNo }}</div>
+          </div>
+          <div class="paper-head__ids">
+            <div class="qr-box">
+              <img src="assets/icons/qr-placeholder.svg" width="62" height="62" alt="QR" />
+            </div>
+            <span class="brand-mark" style="--bm-h: 44px">
+              <img src="assets/logos/el-ramah-logo.png" alt="El Ramah" />
+            </span>
+          </div>
+        </div>
+
+        <div class="dot-row">
+          <span class="dot-row__label">اليوم :</span
+          ><span class="dot-row__value">{{ receipt.dayOfWeek }}</span>
+          <span class="dot-row__label">التاريخ :</span
+          ><span class="dot-row__value">{{ receipt.date }}</span>
+        </div>
+        <div class="dot-row">
+          <span class="dot-row__label">المرسل :</span
+          ><span class="dot-row__value">{{ receipt.senderName }}</span>
+          <span class="dot-row__label">رقم التليفون :</span
+          ><span class="dot-row__value" dir="ltr">{{ receipt.senderPhone }}</span>
+        </div>
+        <div class="dot-row">
+          <span class="dot-row__label">عنوانه :</span
+          ><span class="dot-row__value">{{ receipt.senderAddress }}</span>
+        </div>
+        <div style="height: 4px"></div>
+        <div class="dot-row">
+          <span class="dot-row__label">المرسل إليه :</span
+          ><span class="dot-row__value">{{ receipt.consigneeName }}</span>
+          <span class="dot-row__label">رقم التليفون :</span
+          ><span class="dot-row__value">{{ receipt.consigneePhone }}</span>
+        </div>
+        <div class="dot-row">
+          <span class="dot-row__label">عنوانه :</span
+          ><span class="dot-row__value">{{ receipt.consigneeAddress }}</span>
+        </div>
+
+        <div class="qty-frame">
+          <div class="qty-frame__row">
+            <span class="dot-row__label">عدد الطرود :</span
+            ><span class="box-cell">{{ receipt.packages }}</span>
+            <span class="dot-row__label" style="margin-inline-start: 14px">الــــوزن :</span
+            ><span class="box-cell">{{ receipt.weightKg }} كجم</span>
+            <span class="dot-row__label" style="margin-inline-start: 14px">نوع الطرود :</span
+            ><span class="box-cell">{{ receipt.packageType }}</span>
+            <span class="dot-row__label" style="margin-inline-start: 14px">الكمية :</span
+            ><span class="box-cell">{{ receipt.quantity }}</span>
+          </div>
+          <div class="qty-frame__row">
+            <span class="dot-row__label">فئة البضاعة :</span
+            ><span class="box-cell">{{ receipt.goodsCategory }}</span>
+            <span class="dot-row__label" style="margin-inline-start: 14px">الحجم :</span
+            ><span class="box-cell">{{ receipt.volumeM3 }}</span>
+            <span class="dot-row__label" style="margin-inline-start: 14px">الأبعاد (سم) :</span
+            ><span class="box-cell" style="min-width: 110px; font-size: 11.5px">{{
+              receipt.dimensionsCm
+            }}</span>
+          </div>
+          <div class="qty-frame__row">
+            <span class="dot-row__label">سعر الشحن :</span>
+            <span class="box-cell" style="min-width: 150px">{{ receipt.shippingPrice }}</span>
+          </div>
+          <div class="dot-row">
+            <span class="dot-row__label">المحتوى :</span
+            ><span class="dot-row__value">{{ receipt.goodsDescription }}</span>
+          </div>
+        </div>
+
+        <div class="dot-row">
+          <span class="dot-row__label">ملاحظات :</span
+          ><span class="dot-row__value">{{ receipt.notes }}</span>
+        </div>
+
+        <div class="dot-row" style="font-size: 11.5px; color: #4a4a4f; margin: 6px 0">
+          <span class="dot-row__label" style="color: #4a4a4f">رقم الشحنة :</span
+          ><span class="dot-row__value" style="border-bottom: none">{{ receipt.shipmentNo }}</span>
+          <span class="dot-row__label" style="color: #4a4a4f">المستودع :</span
+          ><span class="dot-row__value" style="border-bottom: none">{{ receipt.warehouse }}</span>
+          <span class="dot-row__label" style="color: #4a4a4f">الموظف :</span
+          ><span class="dot-row__value" style="border-bottom: none">{{
+            receipt.warehousekeeper
+          }}</span>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 22px;
+            gap: 20px;
+          "
+        >
+          <div class="dot-row" style="flex: 1; margin: 0">
+            <span class="dot-row__label">أمين المخزن :</span
+            ><span class="dot-row__value">{{ receipt.warehousekeeper }}</span>
+          </div>
+          <div class="dot-row" style="flex: 1; margin: 0">
+            <span class="dot-row__label">المستلم :</span><span class="dot-row__value"></span>
+          </div>
+        </div>
+
+        <div class="barcode" style="margin-top: 14px">
+          <img src="assets/icons/barcode-placeholder.svg" width="190" height="26" alt="barcode" />
+          <div class="barcode__text">{{ receipt.shipmentNo }}</div>
+        </div>
+        <div class="paper-foot">
+          <div class="paper-foot__line">
+            ٣٢ شارع أفريقيا - امتداد مصطفى النحاس - عمارة ٣٢ بلوك ٢٢
+          </div>
+          <div class="paper-foot__line">
+            موبايل <span dir="ltr">( 01124411119 - 01287790001 - 01228004363 - 01152581111 )</span>
+          </div>
+          <div class="paper-foot__line" dir="ltr">ElRamah@Gmail.com</div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

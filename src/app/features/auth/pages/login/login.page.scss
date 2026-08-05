@@ -1,0 +1,328 @@
+@use '../../styles/controls' as controls;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Prototype design tokens, scoped to the login screen. Values are verbatim
+// from the prototype's GlobalStyles (App.tsx) so the page renders pixel-equal.
+// Scoped to :host so the platform token set stays untouched — note that a few
+// names (--surface-2, --border-2, --radius-sm, --text-2) intentionally shadow
+// global tokens inside this subtree only.
+// ─────────────────────────────────────────────────────────────────────────────
+:host {
+  --bg: #f6f6f7;
+  --surface: #ffffff;
+  --surface-2: #fafafa;
+  --surface-3: #f0f0f1;
+  --text: #161618;
+  --text-2: #3f3f44;
+  --muted: #6e6e76;
+  --faint: #a3a3ac;
+  --border: #e7e7ea;
+  --border-2: #f0f0f2;
+  --brand: #232326;
+  --brand-soft: #ededee;
+  --brand-ink: #ffffff;
+  --ok: #0ea371;
+  --ok-soft: #e5f6ef;
+  --danger: #e23b4e;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --radius-sm: 9px;
+  --sidebar: #141416;
+
+  // Prototype page context: its <body> font, browser-default line-height and
+  // light UA widgets (the prototype never sets color-scheme, so selects and
+  // checkboxes keep their light rendering even on the dark theme).
+  display: block;
+  font-family: 'Cairo', 'Montserrat', 'Segoe UI', Tahoma, Arial, sans-serif;
+  font-size: 16px;
+  line-height: normal;
+  -webkit-font-smoothing: antialiased;
+  color-scheme: light;
+}
+
+:host-context([data-theme='dark']) {
+  --bg: #0e0e0f;
+  --surface: #17171a;
+  --surface-2: #121214;
+  --surface-3: #1f1f23;
+  --text: #f0f0f2;
+  --text-2: #cbcbd2;
+  --muted: #93939c;
+  --faint: #64646d;
+  --border: #28282d;
+  --border-2: #202024;
+  --brand: #e6e6ea;
+  --brand-soft: #2c2c32;
+  --brand-ink: #131316;
+  --ok-soft: #10362c;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --sidebar: #0a0a0b;
+}
+
+@include controls.auth-controls;
+
+.login {
+  min-height: 100vh;
+  display: flex;
+  background: var(--bg);
+}
+
+// ── Brand panel ──────────────────────────────────────────────────────────────
+.login__brand {
+  flex: 1 1 0;
+  min-width: 0;
+  background: linear-gradient(150deg, var(--sidebar) 0%, #29292e 60%, #4b4b54 140%);
+  color: #fff;
+  padding: 48px 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.login__dots {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image: radial-gradient(circle at 1px 1px, #fff 1px, transparent 0);
+  background-size: 26px 26px;
+}
+
+.login__brand-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.login__brand-name {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.login__brand-app {
+  font-size: 12px;
+  color: #b8b8c0;
+  letter-spacing: 1px;
+}
+
+.login__brand-mid {
+  position: relative;
+}
+
+.login__welcome {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.25;
+  max-width: 460px;
+}
+
+.login__tagline {
+  font-size: 15px;
+  color: #c9c9cf;
+  margin-top: 12px;
+  max-width: 440px;
+  line-height: 1.7;
+}
+
+.login__features {
+  display: flex;
+  gap: 26px;
+  margin-top: 34px;
+}
+
+.login__feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.92;
+}
+
+.login__feature-icon {
+  font-size: 24px;
+}
+
+.login__feature-label {
+  font-size: 11px;
+  color: #c9c9cf;
+}
+
+.login__brand-foot {
+  position: relative;
+  font-size: 12px;
+  color: #b8b8c0;
+  display: flex;
+  justify-content: space-between;
+}
+
+// ── Form panel ────────────────────────────────────────────────────────────────
+.login__form {
+  flex: 0 0 460px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px 44px;
+  background: var(--surface);
+  overflow-y: auto;
+
+  // Prototype scrollbar styling (GlobalStyles), scoped to the scrolling panel.
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 99px;
+    border: 2px solid var(--bg);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--faint);
+  }
+}
+
+.login__form-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.login__title {
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--text);
+}
+
+.login__lang {
+  // Browser-default button font, as in the prototype (see styles/_controls.scss).
+  font-family: Arial, sans-serif;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.login__tabs {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.login__tab {
+  font-family: Arial, sans-serif;
+  flex: 1;
+  padding: 9px 10px;
+  border-radius: 9px;
+  border: none;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 800;
+  background: transparent;
+  color: var(--muted);
+}
+
+.login__tab--active {
+  background: var(--surface);
+  color: var(--brand);
+  box-shadow: var(--shadow-sm);
+}
+
+.login__hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.login__roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.role-card {
+  font-family: Arial, sans-serif;
+  text-align: start;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 12px 13px;
+  cursor: pointer;
+  // The prototype's `.card` hover/active transition.
+  transition:
+    box-shadow 0.18s ease,
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.role-card--active {
+  border: 2px solid var(--brand);
+  background: var(--brand-soft);
+}
+
+.role-card__icon {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.role-card__label {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.role-card__desc {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.login__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 4px 0 20px;
+}
+
+.login__remember {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+.login__forgot {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12.5px;
+  color: var(--brand);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.login__version {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

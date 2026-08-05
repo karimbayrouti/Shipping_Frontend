@@ -1,0 +1,79 @@
+<div class="page-hero">
+  <div class="page-hero__icon customers-hero__icon">👥</div>
+  <div class="page-hero__body">
+    <h1 class="page-hero__title">{{ text().pageTitle }}</h1>
+    <div class="page-hero__desc">{{ customers().length }} {{ text().registered }}</div>
+  </div>
+  <button type="button" class="btn btn--primary" (click)="openForm()">＋ {{ text().add }}</button>
+</div>
+
+<div class="banner banner--warn">
+  <div class="banner__icon">🧾</div>
+  <div class="banner__body">
+    <div class="banner__title">
+      {{ text().receivables }}: ≈ {{ formatNumber(totalReceivables()) }} ج.م
+    </div>
+    <div class="banner__text">{{ text().receivablesHint }}</div>
+  </div>
+  <div class="banner__right">
+    <div class="stat-rail">
+      <div class="stat-rail__item">
+        <div class="stat-rail__value customers-stat">{{ customers().length }}</div>
+        <div class="stat-rail__label">{{ text().customers }}</div>
+      </div>
+      <div class="stat-rail__divider"></div>
+      <div class="stat-rail__item">
+        <div class="stat-rail__value shipments-stat">{{ totalShipments() }}</div>
+        <div class="stat-rail__label">{{ text().totalShipments }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="filter-bar">
+    <div class="search-bar">
+      <span class="search-bar__icon" aria-hidden="true">🔍</span>
+      <label class="visually-hidden" for="customer-search">{{ text().search }}</label>
+      <input
+        id="customer-search"
+        class="input"
+        type="search"
+        [value]="query()"
+        (input)="onSearch($event)"
+        [placeholder]="text().search"
+      />
+    </div>
+  </div>
+  <app-customer-table
+    [rows]="visibleCustomers()"
+    [total]="sortedCustomers().length"
+    [page]="page()"
+    [pageSize]="pageSize"
+    [pageCount]="pageCount()"
+    [sort]="sort()"
+    [text]="text()"
+    [locale]="locale()"
+    (pageChange)="changePage($event)"
+    (sortChange)="changeSort($event)"
+    (viewCustomer)="openDetails($event)"
+    (editCustomer)="openForm($event)"
+  />
+</div>
+
+@if (detailsCustomer(); as customer) {
+  <app-customer-details-dialog
+    [customer]="customer"
+    [text]="text()"
+    (closed)="closeDialog()"
+    (editRequested)="editFromDetails($event)"
+  />
+}
+@if (isFormOpen()) {
+  <app-customer-form-dialog
+    [customer]="formCustomer()"
+    [text]="text()"
+    (closed)="closeDialog()"
+    (saved)="saveCustomer($event)"
+  />
+}

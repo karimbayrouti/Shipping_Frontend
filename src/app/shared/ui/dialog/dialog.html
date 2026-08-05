@@ -1,0 +1,23 @@
+<div class="modal-overlay" role="presentation" (click)="closeFromBackdrop($event)">
+  <section class="modal fade-in" role="dialog" aria-modal="true" aria-labelledby="ui-dialog-title">
+    <div class="modal__header">
+      <div>
+        <h2 id="ui-dialog-title" class="modal__title">{{ title() }}</h2>
+        @if (subtitle()) {
+          <div class="modal__sub">{{ subtitle() }}</div>
+        }
+        <ng-content select="[dialogHeaderExtra]" />
+      </div>
+      <button
+        type="button"
+        class="modal__close"
+        (click)="closeRequested.emit()"
+        [attr.aria-label]="closeLabel()"
+      >
+        ×
+      </button>
+    </div>
+    <div class="modal-body"><ng-content /></div>
+    <div class="dialog-footer"><ng-content select="[dialogActions]" /></div>
+  </section>
+</div>

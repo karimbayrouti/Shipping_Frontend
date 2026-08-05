@@ -1,0 +1,11 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// GLOBAL STYLESHEET — the only file Angular loads globally (angular.json).
+// Order matters: primitives → themes → reset → base.
+// Component styles live with their components and consume semantic tokens only.
+// ─────────────────────────────────────────────────────────────────────────────
+@use 'tokens/primitives';
+@use 'themes/light';
+@use 'themes/dark';
+@use 'base/reset';
+@use 'base/base';
+@use 'prints';

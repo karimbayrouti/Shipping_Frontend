@@ -1,0 +1,10 @@
+# Normalize line endings to LF in the repository regardless of contributor OS.
+# The team works on Windows; without this, CRLF drifts into diffs and hooks.
+* text=auto eol=lf
+
+# Binary assets — never normalize.
+*.ico binary
+*.png binary
+*.jpg binary
+*.woff binary
+*.woff2 binary

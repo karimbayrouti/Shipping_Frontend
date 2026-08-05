@@ -1,0 +1,96 @@
+<ui-dialog
+  [title]="'🏷️ ' + text().applyDiscount + ' — ' + shipmentCode()"
+  [subtitle]="shipment().customerName + ' · ' + shipment().destinationCity"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <div class="meta-grid meta-grid--3 grid-collapse">
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().priceBeforeDiscount }}</div>
+      <div class="meta-item__value">
+        {{ formatMoney(details().financial.priceBeforeDiscount) }}
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().discounts }}</div>
+      <div class="meta-item__value" style="color: var(--warn)">
+        {{ discountAmount() > 0 ? formatMoney(discountAmount()) : '—' }}
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().priceAfterDiscount }}</div>
+      <div class="meta-item__value" style="color: var(--ok)">
+        {{ formatMoney(priceAfterDiscount()) }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section__header">
+      <span class="form-section__icon">🏷️</span>
+      <div>
+        <div class="form-section__title">{{ text().applyDiscount }}</div>
+      </div>
+    </div>
+    <div class="form-section__body">
+      <form id="apply-discount-form" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-section__grid form-section__grid--2 grid-collapse">
+          <div class="field">
+            <label class="field__label" for="discount-type">{{ text().discountTypeLabel }}</label>
+            <select
+              data-dialog-initial-focus
+              id="discount-type"
+              class="select"
+              formControlName="discountType"
+            >
+              <option value="percentage">{{ text().discountTypePercentageOption }} (%)</option>
+              <option value="fixed">
+                {{ text().discountTypeFixedOption }} ({{ currencySymbol() }})
+              </option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field__label" for="discount-value">
+              {{ text().discounts }} ({{ valueUnitLabel() }})
+            </label>
+            <input
+              id="discount-value"
+              class="input"
+              type="number"
+              min="0"
+              formControlName="value"
+            />
+          </div>
+          <div class="field span-all">
+            <label class="field__label" for="discount-reason">{{
+              text().discountReasonLabel
+            }}</label>
+            <input id="discount-reason" class="input" formControlName="reason" />
+          </div>
+          <div class="field span-all">
+            <label class="field__label" for="discount-notes">{{ text().colNotes }}</label>
+            <input id="discount-notes" class="input" formControlName="notes" />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="discount-approval">
+    👤 {{ text().approvedByLabel }}: <b>{{ approvedByName }}</b> — {{ approvedAtLabel }}
+  </div>
+
+  <div dialogActions>
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().cancel }}
+    </button>
+    <button
+      type="submit"
+      form="apply-discount-form"
+      class="btn btn--warning"
+      [disabled]="!canApply()"
+    >
+      🏷️ {{ text().applyDiscount }}
+    </button>
+  </div>
+</ui-dialog>

@@ -1,0 +1,134 @@
+<div class="tbl-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th [class.is-sorted]="sort().key === 'name'" [attr.aria-sort]="ariaSort('name')">
+          <button type="button" class="sort-button" (click)="sortChange.emit('name')">
+            {{ text().name }} <span class="sort-arrow">{{ sortSymbol('name') }}</span>
+          </button>
+        </th>
+        <th [class.is-sorted]="sort().key === 'phone'" [attr.aria-sort]="ariaSort('phone')">
+          <button type="button" class="sort-button" (click)="sortChange.emit('phone')">
+            {{ text().phone }} <span class="sort-arrow">{{ sortSymbol('phone') }}</span>
+          </button>
+        </th>
+        <th [class.is-sorted]="sort().key === 'email'" [attr.aria-sort]="ariaSort('email')">
+          <button type="button" class="sort-button" (click)="sortChange.emit('email')">
+            {{ text().email }} <span class="sort-arrow">{{ sortSymbol('email') }}</span>
+          </button>
+        </th>
+        <th [class.is-sorted]="sort().key === 'city'" [attr.aria-sort]="ariaSort('city')">
+          <button type="button" class="sort-button" (click)="sortChange.emit('city')">
+            {{ text().city }} <span class="sort-arrow">{{ sortSymbol('city') }}</span>
+          </button>
+        </th>
+        <th
+          [class.is-sorted]="sort().key === 'shipmentCount'"
+          [attr.aria-sort]="ariaSort('shipmentCount')"
+        >
+          <button type="button" class="sort-button" (click)="sortChange.emit('shipmentCount')">
+            {{ text().shipments }} <span class="sort-arrow">{{ sortSymbol('shipmentCount') }}</span>
+          </button>
+        </th>
+        <th [class.is-sorted]="sort().key === 'revenue'" [attr.aria-sort]="ariaSort('revenue')">
+          <button type="button" class="sort-button" (click)="sortChange.emit('revenue')">
+            {{ text().revenue }} <span class="sort-arrow">{{ sortSymbol('revenue') }}</span>
+          </button>
+        </th>
+        <th [class.is-sorted]="sort().key === 'balance'" [attr.aria-sort]="ariaSort('balance')">
+          <button type="button" class="sort-button" (click)="sortChange.emit('balance')">
+            {{ text().balance }} <span class="sort-arrow">{{ sortSymbol('balance') }}</span>
+          </button>
+        </th>
+        <th>{{ text().actions }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (customer of rows(); track customer.id) {
+        <tr
+          class="row"
+          tabindex="0"
+          (click)="openRow(customer)"
+          (keydown)="onRowKeydown($event, customer)"
+        >
+          <td>
+            <div class="customer-name">
+              <span class="avatar" aria-hidden="true"
+                ><span class="avatar__circle">{{ initials(customer.name) }}</span></span
+              >
+              <div>
+                <div class="customer-name__value">{{ customer.name }}</div>
+                <div class="customer-name__code">{{ customerCode(customer.id) }}</div>
+              </div>
+            </div>
+          </td>
+          <td>{{ customer.phone }}</td>
+          <td>{{ customer.email || '—' }}</td>
+          <td>{{ customer.city }} - {{ customer.governorate }}</td>
+          <td>{{ customer.shipmentCount }}</td>
+          <td>
+            <span class="money money--revenue">≈ {{ formatNumber(customer.revenue) }}</span>
+          </td>
+          <td>
+            <span class="money money--balance">≈ {{ formatNumber(customer.balance) }}</span>
+          </td>
+          <td>
+            <div class="row-actions">
+              <button
+                type="button"
+                class="btn btn--ghost btn--small"
+                (click)="view($event, customer)"
+              >
+                {{ text().view }}
+              </button>
+              <button
+                type="button"
+                class="btn btn--secondary btn--small"
+                (click)="edit($event, customer)"
+              >
+                {{ text().edit }}
+              </button>
+            </div>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="8">
+            <div class="empty-state empty-state--compact">
+              <div class="empty-state__icon">👥</div>
+              <div class="empty-state__title">{{ text().noResults }}</div>
+              <div class="empty-state__hint">{{ text().noResultsHint }}</div>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (total() > pageSize()) {
+  <div class="table-pagination">
+    <span>{{ startIndex() }}–{{ endIndex() }} {{ text().of }} {{ total() }}</span>
+    <div class="table-pagination__nav">
+      <button
+        type="button"
+        class="page-btn icon-btn"
+        [disabled]="page() === 0"
+        (click)="pageChange.emit(page() - 1)"
+        aria-label="Previous page"
+      >
+        {{ previousSymbol() }}
+      </button>
+      <span class="table-pagination__page">{{ page() + 1 }} / {{ pageCount() }}</span>
+      <button
+        type="button"
+        class="page-btn icon-btn"
+        [disabled]="page() >= pageCount() - 1"
+        (click)="pageChange.emit(page() + 1)"
+        aria-label="Next page"
+      >
+        {{ nextSymbol() }}
+      </button>
+    </div>
+  </div>
+}

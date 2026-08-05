@@ -1,0 +1,286 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   MODAL COMPOSITIONS — pieces used inside detail/form modals (src: the
+   *Modal components in src/App.tsx). Base .modal/.modal-overlay live in
+   components.css; these are the recurring inner layouts.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* Modal page harness: a standalone page that shows one open modal over the
+   dimmed app. The backdrop is a plain surface — Angular renders the real page. */
+.modal-page-backdrop {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+/* Two/three-column info grids (src: InfoRow grids in detail modals) */
+.modal-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+  margin-bottom: 14px;
+}
+.modal-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0 16px;
+  margin-bottom: 14px;
+}
+.modal-cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Detail table (src: dcell const — package lines, manifests) */
+.detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14px;
+}
+.detail-table th,
+.detail-table td {
+  padding: 6px 8px;
+  border: 1px solid var(--surface-3);
+  font-size: 12px;
+  text-align: center;
+}
+.detail-table th:first-child,
+.detail-table td:first-child {
+  text-align: start;
+}
+.detail-table thead tr {
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.detail-table tfoot tr {
+  font-weight: 800;
+  background: var(--surface-3);
+}
+
+/* Signature line (src: driver confirmation strip) */
+.signature-line {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.signature-line__slot {
+  flex: 1;
+  border-bottom: 1px dashed var(--border);
+  min-height: 26px;
+  display: flex;
+  align-items: flex-end;
+  padding-inline-start: 8px;
+  color: var(--text-2);
+  font-family: cursive;
+}
+
+/* Discount note box (src: shipDiscount warn box) */
+.warn-box {
+  background: var(--warn-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+.warn-box__title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--warn);
+  margin-bottom: 6px;
+}
+
+/* Receipt-voucher history box (src: rvHistory block) */
+.rv-box {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+.rv-box__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.rv-box__title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--text-2);
+}
+.rv-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border-2);
+  font-size: 12.5px;
+  flex-wrap: wrap;
+}
+.rv-row__meta {
+  color: var(--text-2);
+}
+.rv-row__no {
+  font-family: monospace;
+  font-weight: 700;
+}
+.rv-row__amount {
+  font-weight: 800;
+  color: var(--ok);
+}
+.currency-pill {
+  border: 1px solid var(--border);
+  background: var(--ok-soft);
+  color: var(--ok);
+  border-radius: 99px;
+  padding: 2px 10px;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+/* Activity log list (src: s.log block) */
+.log-list {
+  max-height: 160px;
+  overflow-y: auto;
+}
+.log-item {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--surface-2);
+}
+.log-item__msg {
+  font-size: 12px;
+  color: var(--text-2);
+}
+.log-item__meta {
+  font-size: 11px;
+  color: var(--faint);
+}
+
+/* Document pill (src: documents quick-open chips) */
+.doc-pill {
+  background: var(--surface-3);
+  border-radius: 7px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--brand);
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Document chain (src: docChain strip) */
+.doc-chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.doc-chain__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.doc-chain__node {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 86px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  cursor: pointer;
+}
+.doc-chain__node--missing {
+  border-color: var(--border-2);
+  background: var(--surface);
+  cursor: default;
+  opacity: 0.55;
+}
+.doc-chain__icon {
+  font-size: 14px;
+}
+.doc-chain__label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--brand);
+}
+.doc-chain__node--missing .doc-chain__label {
+  color: var(--muted);
+}
+.doc-chain__no {
+  font-size: 9.5px;
+  color: var(--text-2);
+  font-family: monospace;
+}
+.doc-chain__node--missing .doc-chain__no {
+  color: var(--faint);
+}
+.doc-chain__arrow {
+  color: var(--faint);
+  font-size: 11px;
+}
+
+/* Modal footer actions (src: bottom Btn rows) */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid var(--surface-3);
+  padding-top: 14px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+/* Settlement breakdown row (src: SettlementDetailModal row()) */
+.break-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--surface-2);
+  font-size: 12.5px;
+}
+.break-row__label {
+  color: var(--text-2);
+  font-weight: 500;
+}
+.break-row__value {
+  font-weight: 700;
+  color: var(--text);
+}
+.break-row--strong {
+  font-size: 14px;
+}
+.break-row--strong .break-row__label {
+  color: var(--text);
+  font-weight: 800;
+}
+.break-row--strong .break-row__value {
+  font-weight: 800;
+}
+
+/* Form grid inside form modals (src: 2-col Field grids) */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.form-grid-2 .field,
+.form-grid-3 .field {
+  margin-bottom: 0;
+}
+.span-all {
+  grid-column: 1 / -1;
+}

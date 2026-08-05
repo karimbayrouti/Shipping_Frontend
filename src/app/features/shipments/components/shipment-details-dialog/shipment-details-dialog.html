@@ -1,0 +1,485 @@
+<ui-dialog
+  [title]="'📦 ' + shipmentCode()"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <div dialogHeaderExtra class="modal__sub" style="display: flex; gap: 6px">
+    <span class="status-badge" [attr.data-status]="details().status">{{
+      statusLabel(details().status)
+    }}</span>
+    <span class="status-badge" [attr.data-status]="details().financial.collectionStatus">{{
+      collectionLabel(details().financial.collectionStatus)
+    }}</span>
+    @if (details().hasShortage) {
+      <span class="status-badge" data-status="returned">{{ text().statusShortage }}</span>
+    }
+  </div>
+
+  <div class="section-title">
+    <span class="section-title__icon">🧭</span>
+    <span class="section-title__text">{{ text().operationalStagesTitle }}</span>
+    <span class="section-title__rule"></span>
+  </div>
+  <div class="stage-bar">
+    @for (stage of details().stages; track stage.key; let last = $last) {
+      <div class="stage-bar__item">
+        <div
+          class="stage-bar__stage"
+          [class.is-done]="stage.state === 'done'"
+          [class.is-current]="stage.state === 'current'"
+        >
+          <span class="stage-bar__num">{{ stageLabel(stage.key) }}</span>
+          <span class="stage-bar__sub">{{ stage.reference ? '✓ ' + stage.reference : '' }}</span>
+        </div>
+        @if (!last) {
+          <span class="stage-bar__arrow">←</span>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="section-title">
+    <span class="section-title__icon">🧾</span>
+    <span class="section-title__text">{{ text().summaryTitle }}</span>
+    <span class="section-title__rule"></span>
+  </div>
+  <div class="modal-grid-3 grid-collapse">
+    <div class="info-row">
+      <span class="info-row__label">{{ text().colShipmentNumber }}</span
+      ><span class="info-row__value">{{ shipmentCode() }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().detailsSender }}</span
+      ><span class="info-row__value">{{ details().summary.senderName }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().formSenderPhone }}</span
+      ><span class="info-row__value">{{ details().summary.senderPhone || '—' }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().formWarehouseKeeper }}</span
+      ><span class="info-row__value">{{ details().summary.warehouseKeeper }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().formReceiverName }}</span
+      ><span class="info-row__value">{{ details().summary.receiverName }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().formReceiverPhone }}</span
+      ><span class="info-row__value">{{ details().summary.receiverPhone || '—' }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().formDestinationCity }}</span
+      ><span class="info-row__value"
+        >{{ details().summary.destinationCountry }} - {{ details().summary.destinationCity }}</span
+      >
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().formDirection }}</span
+      ><span class="info-row__value">{{ directionLabel(details().summary.direction) }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().formTransportMode }}</span
+      ><span class="info-row__value">{{
+        transportModeLabel(details().summary.transportMode)
+      }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().formPackageType }}</span
+      ><span class="info-row__value">{{ packageTypeLabel(details().summary.packageType) }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().formGoodsCategory }}</span
+      ><span class="info-row__value">{{
+        goodsCategoryLabel(details().summary.goodsCategory)
+      }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().colTrip }}</span
+      ><span class="info-row__value">{{ details().summary.tripNumber || '—' }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().detailsDriver }}</span
+      ><span class="info-row__value">{{ details().summary.driverName || '—' }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().detailsCurrentLocation }}</span
+      ><span class="info-row__value" style="color: var(--info)"
+        >📍 {{ details().summary.currentLocationApprox || '—' }}</span
+      >
+    </div>
+  </div>
+
+  <div class="section-title">
+    <span class="section-title__icon">📦</span>
+    <span class="section-title__text">{{ text().packageContentsTitle }}</span>
+    <span class="section-title__rule"></span>
+  </div>
+  <table class="detail-table">
+    <thead>
+      <tr>
+        <th>{{ text().colItem }}</th>
+        <th>{{ text().colPackageCount }}</th>
+        <th>{{ text().colPieceCount }}</th>
+        <th>{{ text().colNetWeight }}</th>
+        <th>{{ text().colGrossWeight }}</th>
+        <th>{{ text().colDimensions }}</th>
+        <th>{{ text().colVolume }}</th>
+        <th [attr.title]="text().colStackable + ' / ' + text().colFragile">🧱/🥃</th>
+        <th>{{ text().colDelivered }}</th>
+        <th>{{ text().colShortage }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (line of details().packageLines; track line.itemName) {
+        <tr>
+          <td>{{ line.itemName }}</td>
+          <td>{{ line.packageCount }}</td>
+          <td>{{ line.pieceCount }}</td>
+          <td>{{ line.netWeightKg }}</td>
+          <td>{{ line.grossWeightKg }}</td>
+          <td>{{ line.dimensionsCm || '—' }}</td>
+          <td>{{ line.volumeM3 || '—' }}</td>
+          <td>—</td>
+          <td>{{ line.deliveredCount }}</td>
+          <td style="font-weight: 700; color: var(--danger)">{{ line.shortageCount }}</td>
+        </tr>
+      }
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>{{ text().formTotal }}</td>
+        <td>{{ packageTotals().packages }}</td>
+        <td>{{ packageTotals().pieces }}</td>
+        <td>{{ packageTotals().net }}</td>
+        <td>{{ packageTotals().gross }}</td>
+        <td></td>
+        <td>—</td>
+        <td></td>
+        <td></td>
+        <td style="color: var(--danger)">{{ packageTotals().shortage }}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="section-title">
+    <span class="section-title__icon">✍️</span>
+    <span class="section-title__text">{{ text().driverConfirmTitle }}</span>
+    <span class="section-title__rule"></span>
+  </div>
+  <div class="modal-grid-3 grid-collapse" style="margin-bottom: 8px">
+    <div class="info-row">
+      <span class="info-row__label">{{ text().driverConfirmStatus }}</span
+      ><span class="info-row__value"
+        ><span class="status-badge" data-status="active">{{
+          details().driverConfirmation.confirmed
+            ? text().driverConfirmed
+            : text().driverConfirmPending
+        }}</span></span
+      >
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().driverConfirmTime }}</span
+      ><span class="info-row__value">{{ details().driverConfirmation.confirmedAt || '—' }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__label">{{ text().detailsDriver }}</span
+      ><span class="info-row__value">{{ details().driverConfirmation.driverDisplayName }}</span>
+    </div>
+  </div>
+  <div class="signature-line">
+    <span>{{ text().driverSignatureLabel }}</span
+    ><span class="signature-line__slot">{{ details().driverConfirmation.driverDisplayName }}</span>
+  </div>
+
+  <div class="section-title">
+    <span class="section-title__icon">💰</span>
+    <span class="section-title__text">{{ text().financialSummaryTitle }}</span>
+    <span class="section-title__rule"></span>
+  </div>
+  <div class="meta-grid meta-grid--3 grid-collapse" style="margin-bottom: 16px">
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().priceBeforeDiscount }}</div>
+      <div class="meta-item__value" style="color: var(--muted)">
+        {{
+          formatMoney(
+            details().financial.priceBeforeDiscount,
+            currencySymbol(details().financial.currency)
+          )
+        }}
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().discounts }}</div>
+      <div class="meta-item__value" style="color: var(--muted)">
+        {{
+          details().financial.discounts !== null
+            ? formatMoney(
+                details().financial.discounts!,
+                currencySymbol(details().financial.currency)
+              )
+            : '—'
+        }}
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().formFinalValue }}</div>
+      <div class="meta-item__value">
+        {{
+          formatMoney(
+            details().financial.finalValue,
+            localizedCurrencySymbol(details().financial.currency)
+          )
+        }}
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().paidAmount }}</div>
+      <div class="meta-item__value" style="color: var(--ok)">
+        {{ formatMoney(details().financial.paid, currencySymbol(details().financial.currency)) }}
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().colRemaining }}</div>
+      <div class="meta-item__value" style="color: var(--danger)">
+        {{
+          formatMoney(
+            details().financial.remaining,
+            localizedCurrencySymbol(details().financial.currency)
+          )
+        }}
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().collectedFromDriver }}</div>
+      <div class="meta-item__value" style="color: var(--accent)">
+        {{
+          formatMoney(
+            details().financial.collectedByDriver,
+            currencySymbol(details().financial.currency)
+          )
+        }}
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">{{ text().colCollectionStatus }}</div>
+      <div class="meta-item__value">
+        <span class="status-badge" [attr.data-status]="details().financial.collectionStatus">{{
+          collectionLabel(details().financial.collectionStatus)
+        }}</span>
+      </div>
+    </div>
+  </div>
+  <div
+    style="
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: -8px;
+      margin-bottom: 14px;
+      font-size: 12px;
+    "
+  >
+    <span style="font-weight: 700; color: var(--muted)"
+      >💱 {{ text().collectedByCurrencyLabel }}</span
+    >
+    @for (entry of details().financial.collectedByCurrency; track entry.currency) {
+      <span class="currency-pill">{{ formatMoney(entry.amount, entry.currency) }}</span>
+    }
+  </div>
+  @if (details().financial.collectionStatus !== 'uncollected') {
+    <div class="rv-box">
+      <div class="rv-box__head">
+        <span class="rv-box__title"
+          >🧾 {{ text().receiptVouchersLog }} ({{
+            details().financial.receiptVouchers.length
+          }})</span
+        >
+        <button
+          type="button"
+          class="btn btn--ghost btn--small"
+          (click)="receiptVouchersLogPrintRequested.emit()"
+        >
+          🖨️ {{ text().receiptVouchersLog }}
+        </button>
+      </div>
+      @for (voucher of details().financial.receiptVouchers; track voucher.voucherNo) {
+        <div class="rv-row">
+          <span class="rv-row__meta">
+            <span class="rv-row__no">{{ voucher.voucherNo }}</span> · {{ voucher.date }} ·
+            {{ paymentMethodLabel(voucher.method) }} · {{ text().receivedByLabel }}:
+            {{ voucher.receivedBy }}
+          </span>
+          <span style="display: inline-flex; align-items: center; gap: 8px">
+            <span class="rv-row__amount">{{
+              formatMoney(voucher.amount, currencySymbol(voucher.currency))
+            }}</span>
+            <button
+              type="button"
+              class="btn btn--ghost btn--small"
+              (click)="onVoucherPrint(voucher)"
+            >
+              🖨️
+            </button>
+            <button
+              type="button"
+              class="btn btn--ghost btn--small"
+              (click)="onVoucherDelete(voucher)"
+            >
+              🗑️
+            </button>
+          </span>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="modal-cols-2 grid-collapse">
+    <div>
+      <div class="section-title">
+        <span class="section-title__icon">🕓</span>
+        <span class="section-title__text">{{ text().timelineTitle }}</span>
+        <span class="section-title__rule"></span>
+      </div>
+      <div class="timeline">
+        @for (event of details().timeline; track $index; let last = $last) {
+          <div class="timeline__event" [class.is-done]="event.done">
+            <span class="timeline__dot"></span>
+            @if (!last) {
+              <span class="timeline__line"></span>
+            }
+            <div class="timeline__body">
+              <div class="timeline__label">{{ event.label }}</div>
+              @if (event.time) {
+                <div class="timeline__time">{{ event.time }}</div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+    <div>
+      <div class="section-title">
+        <span class="section-title__icon">📝</span>
+        <span class="section-title__text">{{ text().activityLogTitle }}</span>
+        <span class="section-title__rule"></span>
+      </div>
+      <div class="log-list">
+        @for (entry of details().activityLog; track $index) {
+          <div class="log-item">
+            <div class="log-item__msg">{{ entry.message }}</div>
+            <div class="log-item__meta">{{ entry.actor }} · {{ entry.time }}</div>
+          </div>
+        }
+      </div>
+      <div class="divider"></div>
+      <div class="section-title">
+        <span class="section-title__icon">📎</span>
+        <span class="section-title__text">{{ text().documentsTitle }}</span>
+        <span class="section-title__rule"></span>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        @for (doc of details().documents; track doc.kind) {
+          <button type="button" class="doc-pill" (click)="onDocumentPill(doc.kind)">
+            📄 {{ documentLabel(doc.kind) }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <span class="section-title__icon">🔗</span>
+    <span class="section-title__text">{{ text().docChainTitle }}</span>
+    <span class="section-title__rule"></span>
+    <span style="font-size: 11px; color: var(--muted)">{{ text().docChainHint }}</span>
+  </div>
+  <div class="doc-chain">
+    @for (node of details().docChain; track node.kind; let last = $last) {
+      <span class="doc-chain__link">
+        <button
+          type="button"
+          class="doc-chain__node"
+          [class.doc-chain__node--missing]="isDocChainNodeDisabled(node.kind)"
+          [disabled]="isDocChainNodeDisabled(node.kind)"
+          (click)="onDocChainNode(node)"
+        >
+          <span class="doc-chain__icon">{{ docChainIcon(node.kind) }}</span>
+          <span class="doc-chain__label">{{ docChainLabel(node.kind) }}</span>
+          <span class="doc-chain__no">{{ node.referenceNo }}</span>
+        </button>
+        @if (!last) {
+          <span class="doc-chain__arrow">←</span>
+        }
+      </span>
+    }
+  </div>
+
+  <div dialogActions>
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().close }}
+    </button>
+    @switch (actionsLayout()) {
+      @case ('draft') {
+        <button type="button" class="btn btn--outline" (click)="editRequested.emit()">
+          {{ text().edit }}
+        </button>
+        <button type="button" class="btn btn--warning" (click)="applyDiscountRequested.emit()">
+          🏷️ {{ text().applyDiscount }}
+        </button>
+        <button type="button" class="btn btn--danger" (click)="cancelShipmentRequested.emit()">
+          🚫 {{ text().cancelShipmentAction }}
+        </button>
+      }
+      @case ('pendingDispatch') {
+        <button type="button" class="btn btn--outline" (click)="editRequested.emit()">
+          {{ text().edit }}
+        </button>
+        <button type="button" class="btn btn--warning" (click)="applyDiscountRequested.emit()">
+          🏷️ {{ text().applyDiscount }}
+        </button>
+        <button type="button" class="btn btn--danger" (click)="cancelShipmentRequested.emit()">
+          🚫 {{ text().cancelShipmentAction }}
+        </button>
+        <button
+          type="button"
+          class="btn btn--primary"
+          (click)="createPaymentVoucherRequested.emit()"
+        >
+          🧾 {{ text().createPaymentVoucher }}
+        </button>
+      }
+      @case ('inTransit') {
+        <button type="button" class="btn btn--warning" (click)="applyDiscountRequested.emit()">
+          🏷️ {{ text().applyDiscount }}
+        </button>
+        <button type="button" class="btn btn--danger" (click)="markAsReturnedRequested.emit()">
+          ↩️ {{ text().markAsReturnedAction }}
+        </button>
+        <button
+          type="button"
+          class="btn btn--primary"
+          (click)="createPaymentVoucherRequested.emit()"
+        >
+          🧾 {{ text().createPaymentVoucher }}
+        </button>
+      }
+      @case ('closed') {
+        <!-- Closed shipments only expose the Close action above. -->
+      }
+      @default {
+        <button type="button" class="btn btn--warning" (click)="applyDiscountRequested.emit()">
+          🏷️ {{ text().applyDiscount }}
+        </button>
+        <button
+          type="button"
+          class="btn btn--primary"
+          (click)="createPaymentVoucherRequested.emit()"
+        >
+          🧾 {{ text().createPaymentVoucher }}
+        </button>
+      }
+    }
+  </div>
+</ui-dialog>

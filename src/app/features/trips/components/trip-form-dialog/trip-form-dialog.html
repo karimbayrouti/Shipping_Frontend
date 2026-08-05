@@ -1,0 +1,549 @@
+<ui-dialog
+  [title]="'🧭 ' + text().formTitle"
+  [subtitle]="text().formSubtitle"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <form id="trip-form" (ngSubmit)="submit()">
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">🧾</span>
+        <div>
+          <div class="form-section__title">{{ text().formSectionTripInfo }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        <div class="form-section__grid grid-collapse">
+          <div class="field">
+            <label class="field__label" for="trip-waybill-no">{{ text().formWaybillNo }}</label>
+            <input
+              id="trip-waybill-no"
+              class="input"
+              style="background: var(--surface-2)"
+              [value]="nextWaybillNo()"
+              readonly
+            />
+            <div class="field__hint">{{ text().formWaybillHint }}</div>
+          </div>
+          <div class="field">
+            <label class="field__label" for="trip-no">{{ text().formTripNo }}</label>
+            <input
+              id="trip-no"
+              class="input"
+              style="background: var(--surface-2)"
+              [value]="nextTripNo()"
+              readonly
+            />
+            <div class="field__hint">{{ text().formTripNoHint }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">🗺</span>
+        <div>
+          <div class="form-section__title">{{ text().formSectionSchedule }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        <div class="form-section__grid grid-collapse">
+          <div class="field">
+            <label class="field__label" for="trip-start-date">{{ text().formTripStartDate }}</label>
+            <input
+              id="trip-start-date"
+              type="date"
+              class="input"
+              [(ngModel)]="tripStartDate"
+              name="tripStartDate"
+            />
+          </div>
+          <div class="field">
+            <label class="field__label" for="trip-expected-departure">{{
+              text().formExpectedDeparture
+            }}</label>
+            <input
+              id="trip-expected-departure"
+              type="date"
+              class="input"
+              [(ngModel)]="expectedDeparture"
+              name="expectedDeparture"
+            />
+          </div>
+          <div class="field">
+            <label class="field__label" for="trip-expected-arrival">{{
+              text().formExpectedArrival
+            }}</label>
+            <input
+              id="trip-expected-arrival"
+              type="date"
+              class="input"
+              [(ngModel)]="expectedArrival"
+              name="expectedArrival"
+            />
+          </div>
+          <div class="field">
+            <label class="field__label" for="trip-expected-return">{{
+              text().formExpectedReturn
+            }}</label>
+            <input
+              id="trip-expected-return"
+              type="date"
+              class="input"
+              [(ngModel)]="expectedReturn"
+              name="expectedReturn"
+            />
+          </div>
+          <div class="field">
+            <label class="field__label" for="trip-actual-departure">{{
+              text().formActualDepartureArrival
+            }}</label>
+            <div
+              id="trip-actual-departure"
+              style="
+                display: flex;
+                align-items: center;
+                height: 38px;
+                font-size: 12.5px;
+                color: var(--muted);
+              "
+            >
+              🔄 —
+            </div>
+            <div class="field__hint">{{ text().formAutoUpdateHint }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">🧭</span>
+        <div>
+          <div class="form-section__title">{{ text().formSectionRoute }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        @if (routeStops().length > 0) {
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+            @for (stop of routeStops(); track stop.kind + stop.city; let last = $last) {
+              <span
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 6px;
+                  background: var(--info-soft);
+                  border: 1px solid var(--border);
+                  border-radius: 999px;
+                  padding: 5px 12px;
+                  font-size: 12.5px;
+                  font-weight: 600;
+                "
+              >
+                {{ stop.kind === 'origin' ? '📤' : '📥' }} {{ stop.city }}
+              </span>
+              @if (!last) {
+                <span style="color: var(--muted)">←</span>
+              }
+            }
+          </div>
+        } @else {
+          <p style="color: var(--muted); font-size: 12.5px; margin: 0">
+            {{ text().formRouteEmpty }}
+          </p>
+        }
+        <div class="field__hint" style="margin-top: 6px">{{ text().formRouteHint }}</div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">🚚</span>
+        <div>
+          <div class="form-section__title">{{ text().formSectionAssignment }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        <div class="mode-toggle">
+          <button
+            type="button"
+            class="mode-toggle__btn"
+            [class.is-active]="assignmentMode() === 'internal'"
+            (click)="setAssignmentMode('internal')"
+          >
+            {{ text().internalTruck }}
+          </button>
+          <button
+            type="button"
+            class="mode-toggle__btn"
+            [class.is-active]="assignmentMode() === 'external'"
+            (click)="setAssignmentMode('external')"
+          >
+            {{ text().externalTruck }}
+          </button>
+        </div>
+
+        @if (assignmentMode() === 'internal') {
+          <div class="form-section__grid grid-collapse">
+            <div class="field">
+              <label class="field__label" for="trip-truck">{{ text().formTruck }}</label>
+              <select
+                id="trip-truck"
+                class="select"
+                [(ngModel)]="selectedTruckPlate"
+                name="truckPlate"
+              >
+                <option value="">{{ text().formTruckNone }}</option>
+                @for (option of assignmentOptions; track option.truckPlate) {
+                  <option [value]="option.truckPlate">{{ option.truckPlate }}</option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label class="field__label" for="trip-driver">{{ text().formDriver }}</label>
+              <select
+                id="trip-driver"
+                class="select"
+                [(ngModel)]="selectedDriverName"
+                name="driverName"
+              >
+                <option value="">{{ text().formDriverNone }}</option>
+                @for (name of driverNameOptions; track name) {
+                  <option [value]="name">{{ driverOptionLabel(name) }}</option>
+                }
+              </select>
+              @if (attemptedSave() && !isInternalValid()) {
+                <div class="field__hint" style="color: var(--danger)">
+                  {{ text().formRequired }}
+                </div>
+              }
+            </div>
+            <div class="field">
+              <label class="field__label" for="trip-helper">{{ text().formHelper }}</label>
+              <select
+                id="trip-helper"
+                class="select"
+                [(ngModel)]="selectedHelperName"
+                name="helperName"
+              >
+                <option value="">{{ text().formHelperNone }}</option>
+                @for (name of driverNameOptions; track name) {
+                  <option [value]="name">{{ driverOptionLabel(name) }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        } @else {
+          <div style="font-size: 11px; color: var(--warn); font-weight: 700; margin-bottom: 10px">
+            {{ text().internalOnlyHint }}
+          </div>
+          <div class="form-section__title" style="font-size: 12.5px; margin-bottom: 8px">
+            {{ text().formSectionExternalVehicle }}
+          </div>
+          <div class="form-section__grid grid-collapse">
+            <div class="field">
+              <label class="field__label" for="ext-owner-name">{{
+                text().formExternalOwnerName
+              }}</label>
+              <input
+                id="ext-owner-name"
+                class="input"
+                [(ngModel)]="externalOwnerName"
+                name="externalOwnerName"
+              />
+            </div>
+            <div class="field">
+              <label class="field__label" for="ext-vehicle-type">{{
+                text().formExternalVehicleType
+              }}</label>
+              <input
+                id="ext-vehicle-type"
+                class="input"
+                [(ngModel)]="externalVehicleType"
+                name="externalVehicleType"
+              />
+            </div>
+            <div class="field">
+              <label class="field__label" for="ext-model">{{ text().formExternalModel }}</label>
+              <input
+                id="ext-model"
+                class="input"
+                [(ngModel)]="externalModel"
+                name="externalModel"
+              />
+            </div>
+            <div class="field">
+              <label class="field__label" for="ext-plate">{{ text().formExternalPlate }}</label>
+              <input
+                id="ext-plate"
+                class="input"
+                [(ngModel)]="externalPlateNumber"
+                name="externalPlateNumber"
+              />
+              @if (attemptedSave() && !isExternalValid() && !externalPlateNumber()) {
+                <div class="field__hint" style="color: var(--danger)">
+                  {{ text().formRequired }}
+                </div>
+              }
+            </div>
+            <div class="field">
+              <label class="field__label" for="ext-capacity">{{
+                text().formExternalCapacity
+              }}</label>
+              <input
+                id="ext-capacity"
+                type="number"
+                class="input"
+                [ngModel]="externalCapacityKg()"
+                (ngModelChange)="externalCapacityKg.set($event)"
+                name="externalCapacityKg"
+              />
+            </div>
+          </div>
+          <div class="form-section__title" style="font-size: 12.5px; margin: 14px 0 8px">
+            {{ text().formSectionExternalDriver }}
+          </div>
+          <div class="form-section__grid grid-collapse">
+            <div class="field">
+              <label class="field__label" for="ext-driver-name">{{
+                text().formExternalDriverName
+              }}</label>
+              <input
+                id="ext-driver-name"
+                class="input"
+                [(ngModel)]="externalDriverName"
+                name="externalDriverName"
+              />
+              @if (attemptedSave() && !isExternalValid() && !externalDriverName()) {
+                <div class="field__hint" style="color: var(--danger)">
+                  {{ text().formRequired }}
+                </div>
+              }
+            </div>
+            <div class="field">
+              <label class="field__label" for="ext-driver-phone">{{
+                text().formExternalDriverPhone
+              }}</label>
+              <input
+                id="ext-driver-phone"
+                class="input"
+                [(ngModel)]="externalDriverPhone"
+                name="externalDriverPhone"
+              />
+            </div>
+            <div class="field">
+              <label class="field__label" for="ext-driver-passport">{{
+                text().formExternalDriverPassport
+              }}</label>
+              <input
+                id="ext-driver-passport"
+                class="input"
+                [(ngModel)]="externalDriverPassport"
+                name="externalDriverPassport"
+              />
+            </div>
+            <div class="field">
+              <label class="field__label" for="ext-driver-nationality">{{
+                text().formExternalDriverNationality
+              }}</label>
+              <input
+                id="ext-driver-nationality"
+                class="input"
+                [(ngModel)]="externalDriverNationality"
+                name="externalDriverNationality"
+              />
+            </div>
+            <div class="field">
+              <label class="field__label" for="ext-driver-license">{{
+                text().formExternalDriverLicense
+              }}</label>
+              <input
+                id="ext-driver-license"
+                class="input"
+                [(ngModel)]="externalDriverLicense"
+                name="externalDriverLicense"
+              />
+            </div>
+            <div class="field">
+              <label class="field__label" for="ext-driver-license-expiry">{{
+                text().formExternalDriverLicenseExpiry
+              }}</label>
+              <input
+                id="ext-driver-license-expiry"
+                type="date"
+                class="input"
+                [(ngModel)]="externalDriverLicenseExpiry"
+                name="externalDriverLicenseExpiry"
+              />
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">💰</span>
+        <div>
+          <div class="form-section__title">{{ text().formSectionFinancial }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        <div class="form-section__grid form-section__grid--2 grid-collapse">
+          <div class="field">
+            <label class="field__label" for="trip-total-freight">{{
+              text().formTotalFreight
+            }}</label>
+            <input
+              id="trip-total-freight"
+              class="input"
+              style="background: var(--surface-2)"
+              [value]="totalRevenueLabel()"
+              readonly
+            />
+          </div>
+          <div class="field">
+            <label class="field__label" for="trip-driver-advance">{{
+              text().formDriverAdvance
+            }}</label>
+            <input
+              id="trip-driver-advance"
+              type="number"
+              class="input"
+              [ngModel]="driverAdvance()"
+              (ngModelChange)="driverAdvance.set($event)"
+              name="driverAdvance"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">📦</span>
+        <div>
+          <div class="form-section__title">{{ text().formSectionShipments }}</div>
+        </div>
+        <span style="margin-inline-start: auto; font-size: 11.5px; color: var(--muted)"
+          >{{ readyShipments().length }} {{ text().formShipmentsWaiting }}</span
+        >
+      </div>
+      <div class="form-section__body">
+        <div class="search-bar" style="margin-bottom: 10px">
+          <span class="search-bar__icon">🔍</span>
+          <input
+            class="input"
+            [placeholder]="text().formShipmentsSearch"
+            [ngModel]="shipmentSearch()"
+            (ngModelChange)="shipmentSearch.set($event)"
+            name="shipmentSearch"
+          />
+        </div>
+        <div class="tbl-wrap" style="max-height: 260px; overflow-y: auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>{{ text().colShipmentNo }}</th>
+                <th>{{ text().colCustomer }}</th>
+                <th>{{ text().colDirection }}</th>
+                <th>{{ text().colRouteShort }}</th>
+                <th>{{ text().colPackages }}</th>
+                <th>{{ text().colWeight }}</th>
+                <th>{{ text().colValue }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (shipment of filteredShipments(); track shipment.id) {
+                <tr class="row" (click)="toggleShipment(shipment.id, !isSelected(shipment.id))">
+                  <td (click)="$event.stopPropagation()">
+                    <input
+                      type="checkbox"
+                      [checked]="isSelected(shipment.id)"
+                      (change)="toggleShipment(shipment.id, $any($event.target).checked)"
+                    />
+                  </td>
+                  <td>{{ shipment.shipmentNo }}</td>
+                  <td>{{ shipment.customerName }}</td>
+                  <td>
+                    <span class="status-badge" data-status="ready">{{
+                      shipment.direction === 'outbound'
+                        ? text().directionOutbound
+                        : text().directionInbound
+                    }}</span>
+                  </td>
+                  <td style="white-space: nowrap; font-size: 11.5px">
+                    📤 {{ shipment.originCity }} → 📥 {{ shipment.destinationCity }}
+                  </td>
+                  <td>{{ shipment.packageCount }}</td>
+                  <td>{{ shipment.weightKg }}</td>
+                  <td style="white-space: nowrap">{{ shipment.valueLabel }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="sum-cards" style="margin-top: 14px">
+          <div class="sum-card">
+            <div class="sum-card__label">{{ text().aggSelectedShipments }}</div>
+            <div class="sum-card__value" style="color: var(--brand)">
+              {{ selectedShipmentIds().size }}
+            </div>
+          </div>
+          <div class="sum-card">
+            <div class="sum-card__label">{{ text().aggStops }}</div>
+            <div class="sum-card__value" style="color: var(--info)">{{ stopsCount() }}</div>
+          </div>
+          <div class="sum-card">
+            <div class="sum-card__label">{{ text().aggLoadingPoints }}</div>
+            <div class="sum-card__value" style="color: var(--accent)">
+              {{ loadingLocationsCount() }}
+            </div>
+          </div>
+          <div class="sum-card">
+            <div class="sum-card__label">{{ text().aggDeliveryPoints }}</div>
+            <div class="sum-card__value" style="color: var(--accent)">
+              {{ deliveryLocationsCount() }}
+            </div>
+          </div>
+          <div class="sum-card">
+            <div class="sum-card__label">{{ text().aggTotalPackages }}</div>
+            <div class="sum-card__value" style="color: var(--accent)">{{ totalPackages() }}</div>
+          </div>
+          <div class="sum-card">
+            <div class="sum-card__label">{{ text().aggTotalWeight }}</div>
+            <div
+              class="sum-card__value"
+              style="font-size: 16px; font-weight: 800; color: var(--warn)"
+            >
+              {{ totalWeightKg().toLocaleString('en-US') }} {{ text().weightUnitKg }}
+            </div>
+          </div>
+          <div class="sum-card">
+            <div class="sum-card__label">{{ text().aggVolume }}</div>
+            <div class="sum-card__value" style="color: var(--info)">—</div>
+          </div>
+          <div class="sum-card">
+            <div class="sum-card__label">{{ text().aggTotalRevenue }}</div>
+            <div class="sum-card__value" style="color: var(--ok)">{{ totalRevenueLabel() }}</div>
+          </div>
+        </div>
+        @if (attemptedSave() && selectedShipmentIds().size === 0) {
+          <div class="field__hint" style="color: var(--danger); margin-top: 6px">
+            {{ text().formRequired }}
+          </div>
+        }
+      </div>
+    </div>
+  </form>
+
+  <div dialogActions>
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().cancel }}
+    </button>
+    <button type="submit" form="trip-form" class="btn btn--primary">{{ text().save }}</button>
+  </div>
+</ui-dialog>

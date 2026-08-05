@@ -1,0 +1,101 @@
+<div
+  class="print-overlay"
+  role="presentation"
+  (click)="closed.emit()"
+  (keydown.escape)="closed.emit()"
+>
+  <div
+    class="doc-viewer fade-in"
+    dir="rtl"
+    role="dialog"
+    aria-modal="true"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+  >
+    <div class="doc-toolbar no-print">
+      <span class="doc-toolbar__title">إقرار استلام · {{ data().receiptNo }}</span>
+      <div class="doc-toolbar__actions">
+        <button type="button" class="btn btn--primary btn--small" (click)="print()">🖨 طباعة</button>
+        <button type="button" class="btn btn--secondary btn--small" (click)="closed.emit()">
+          إغلاق
+        </button>
+      </div>
+    </div>
+
+    <div class="doc-page">
+      <div class="paper-head">
+        <div class="paper-head__co">
+          <div class="paper-head__co-name">مؤسسة الرمــاح</div>
+          <div class="paper-head__co-sub">للتصدير وخدمات الشحن الدولي</div>
+          <div class="paper-head__co-mgr">م/ رماح عبد الحليم</div>
+        </div>
+        <div class="paper-head__title-wrap">
+          <div class="paper-head__title">إقرار استلام</div>
+          <div class="paper-head__title-en">Delivery Receipt</div>
+          <div class="paper-head__no">{{ data().receiptNo }}</div>
+        </div>
+        <div class="paper-head__ids">
+          <div class="qr-box">
+            <img src="assets/icons/qr-placeholder.svg" width="62" height="62" alt="QR" />
+          </div>
+          <span class="brand-mark" style="--bm-h: 44px">
+            <img src="assets/logos/el-ramah-logo.png" alt="El Ramah" />
+          </span>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 6px; font-size: 12.5px">
+        <b>رقم الشحنة:</b> {{ data().shipmentNo }} · <b>رقم البوليصة:</b> {{ data().waybillNo }}
+      </div>
+      <p style="font-size: 13px; line-height: 1.9; color: #3f3f44">
+        نقر نحن باستلام الشحنة رقم {{ data().shipmentNo }} المُسلَّمة في
+        {{ data().deliveryCity }} بتاريخ {{ data().deliveryDate }} عبر السائق
+        {{ data().driverName }}، وفق الكميات المبينة أدناه.
+      </p>
+
+      <table class="doc-table" style="margin: 10px 0">
+        <thead>
+          <tr>
+            <th>الصنف</th>
+            <th>المُرسَل</th>
+            <th>المُسلَّم</th>
+            <th>العجز</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (line of data().lines; track line.itemName) {
+            <tr>
+              <td>{{ line.itemName }}</td>
+              <td>{{ line.sentQuantity }}</td>
+              <td>{{ line.deliveredQuantity }}</td>
+              <td style="font-weight: 700" class="ink-danger">{{ line.shortageQuantity }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <div class="doc-row" style="font-weight: 800; background: #fef2f2">
+        <span class="doc-row__label">العجز</span>
+        <span class="ink-danger">{{ data().totalShortage }} عدد القطع</span>
+      </div>
+
+      <div class="doc-footer">
+        <div class="doc-footer__sig">المستلم</div>
+        <div class="doc-footer__sig">السائق</div>
+      </div>
+
+      <div class="barcode">
+        <img src="assets/icons/barcode-placeholder.svg" width="190" height="26" alt="barcode" />
+        <div class="barcode__text">{{ data().receiptNo }}</div>
+      </div>
+
+      <div class="paper-foot">
+        <div class="paper-foot__line">٣٢ شارع أفريقيا - امتداد مصطفى النحاس - عمارة ٣٢ بلوك ٢٢</div>
+        <div class="paper-foot__line">
+          موبايل <span dir="ltr">( 01124411119 - 01287790001 - 01228004363 - 01152581111 )</span>
+        </div>
+        <div class="paper-foot__line" dir="ltr">ElRamah@Gmail.com</div>
+      </div>
+    </div>
+  </div>
+</div>

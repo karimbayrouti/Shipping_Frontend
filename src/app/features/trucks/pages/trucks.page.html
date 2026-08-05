@@ -1,0 +1,197 @@
+<!-- Page hero -->
+<div class="page-hero">
+  <div class="page-hero__icon trucks-hero__icon">🚚</div>
+  <div class="page-hero__body">
+    <h1 class="page-hero__title">{{ text().pageTitle }}</h1>
+    <div class="page-hero__desc">{{ trucks().length }} {{ text().registered }}</div>
+  </div>
+  <div class="page-hero__actions">
+    <button type="button" class="btn btn--secondary" (click)="openAddInsurancePolicyModal()">
+      🛡 {{ text().addInsurancePolicy }}
+    </button>
+    <button type="button" class="btn btn--secondary" (click)="openAddVehicleRecordModal()">
+      🔧 {{ text().addVehicleRecord }}
+    </button>
+    <button type="button" class="btn btn--primary" (click)="openAddTruckModal()">
+      ＋ {{ text().addTruck }}
+    </button>
+  </div>
+</div>
+
+<!-- Renewals banner -->
+<div class="banner banner--danger">
+  <div class="banner__icon">⏰</div>
+  <div class="banner__body">
+    <div class="banner__title">{{ text().renewalBannerCount }} {{ text().upcomingRenewals }}</div>
+    <div class="banner__text">{{ text().renewalBannerText }}</div>
+  </div>
+</div>
+
+<!-- Fleet utilisation card -->
+<div class="card" style="margin-bottom: 18px">
+  <div class="card__header">
+    <div>
+      <div class="card__title">{{ text().fleetUtilization }}</div>
+      <div class="card__sub">{{ onRoadCount() }}/{{ trucks().length }} {{ text().onRoad }}</div>
+    </div>
+    <span class="fleet-capacity">⚖️ {{ formatCapacity(totalCapacityKg()) }}</span>
+  </div>
+  <div class="seg-bar-wrap">
+    <div class="seg-bar">
+      <div class="seg-bar__track">
+        <div
+          class="seg-bar__seg"
+          [title]="text().onRoad + ': ' + onRoadCount()"
+          [style.width.%]="onRoadPercent()"
+          style="background: var(--sc-onRoad)"
+        ></div>
+        <div
+          class="seg-bar__seg"
+          [title]="text().available + ': ' + availableCount()"
+          [style.width.%]="availablePercent()"
+          style="background: var(--sc-available)"
+        ></div>
+      </div>
+      <div class="seg-bar__legend">
+        <div class="seg-bar__key">
+          <span class="seg-bar__swatch" style="background: var(--sc-onRoad)"></span>
+          <span class="seg-bar__label">{{ text().onRoad }}</span>
+          <span class="seg-bar__value">{{ onRoadCount() }}</span>
+        </div>
+        <div class="seg-bar__key">
+          <span class="seg-bar__swatch" style="background: var(--sc-available)"></span>
+          <span class="seg-bar__label">{{ text().available }}</span>
+          <span class="seg-bar__value">{{ availableCount() }}</span>
+        </div>
+        <div class="seg-bar__key">
+          <span class="seg-bar__swatch" style="background: var(--sc-offDuty)"></span>
+          <span class="seg-bar__label">{{ text().offDuty }}</span>
+          <span class="seg-bar__value">{{ offDutyCount() }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Truck list card -->
+<div class="card">
+  <div class="filter-bar">
+    <div class="search-bar">
+      <span class="search-bar__icon" aria-hidden="true">🔍</span>
+      <label class="visually-hidden" for="truck-search">{{ text().search }}</label>
+      <input
+        id="truck-search"
+        class="input"
+        type="search"
+        [value]="query()"
+        (input)="onSearch($event)"
+        [placeholder]="text().search"
+      />
+    </div>
+  </div>
+  <app-truck-table
+    [rows]="filteredTrucks()"
+    [text]="text()"
+    (viewHistory)="openVehicleHistoryModal($event)"
+    (editTruck)="openEditTruckModal($event)"
+  />
+</div>
+
+@if (isFormOpen()) {
+  <app-truck-form-dialog
+    [truck]="formTruck()"
+    [text]="text()"
+    (closed)="closeDialog()"
+    (saved)="saveTruck($event)"
+  />
+}
+
+@if (isInsuranceOpen()) {
+  <app-insurance-policy-form-dialog
+    [trucks]="trucks()"
+    [text]="text()"
+    (closed)="closeDialog()"
+    (saved)="saveInsurancePolicy($event)"
+  />
+}
+
+@if (isHistoryOpen() && historyTruck()) {
+  <app-vehicle-history-dialog
+    [truck]="historyTruck()!"
+    [text]="text()"
+    (closed)="closeDialog()"
+    (editRequested)="openEditFromHistory($event)"
+    (insurancePolicyRequested)="openInsuranceFromHistory($event)"
+    (vehicleRecordRequested)="openVehicleRecordFromHistory($event)"
+    (tripDetailsRequested)="openTripDetailsFromHistory($event)"
+  />
+}
+
+@if (isVehicleRecordOpen()) {
+  <app-vehicle-record-form-dialog
+    [trucks]="trucks()"
+    [preselectedTruckId]="vehicleRecordTruckId()"
+    [text]="text()"
+    (closed)="closeDialog()"
+    (saved)="saveVehicleRecord($event)"
+  />
+}
+
+@if (tripDetailsTrip(); as trip) {
+  <app-trip-details-dialog
+    [trip]="trip"
+    [rows]="tripDetailsRows()"
+    [text]="tripText()"
+    (closed)="closeTripDetailsDialog()"
+    (shipmentClicked)="openShipmentDetailsFromTrip($event)"
+    (confirmArrivalRequested)="onTripConfirmArrivalRequested()"
+    (settleRequested)="onTripSettleRequested()"
+    (printManifestRequested)="printTripManifest(trip)"
+    (printWaybillRequested)="printTripWaybill(trip)"
+    (printAllWaybillsRequested)="printAllTripWaybills(trip)"
+    (printSelectedWaybillsRequested)="printSelectedTripWaybills(trip, $event)"
+    (printReceiptsRequested)="printTripReceipts(trip)"
+    (printAdvanceReceiptRequested)="printTripAdvanceReceipt(trip)"
+  />
+}
+
+@if (selectedShipmentDetails(); as details) {
+  <app-shipment-details-dialog
+    [details]="details"
+    [text]="shipmentsText()"
+    (closed)="closeShipmentDetailsFromTrip()"
+    (documentRequested)="onShipmentDocumentRequestedFromTrip($event)"
+  />
+}
+
+@if (tripManifestPrintData(); as data) {
+  <app-loading-manifest-dialog [data]="data" (closed)="tripManifestPrintData.set(null)" />
+}
+
+@if (tripWaybillBatchPrintData(); as data) {
+  <app-waybill-batch-dialog [data]="data" (closed)="tripWaybillBatchPrintData.set(null)" />
+}
+
+@if (tripReceiptBatchPrintData(); as data) {
+  <app-receipt-batch-dialog [data]="data" (closed)="tripReceiptBatchPrintData.set(null)" />
+}
+
+@if (tripWaybillPrintData(); as data) {
+  <app-waybill-dialog [data]="data" (closed)="tripWaybillPrintData.set(null)" />
+}
+
+@if (tripAdvanceReceiptPrintData(); as data) {
+  <app-advance-receipt-dialog [data]="data" (closed)="tripAdvanceReceiptPrintData.set(null)" />
+}
+
+@if (receivingReceiptPrintData(); as data) {
+  <app-receiving-receipt-dialog [data]="data" (closed)="receivingReceiptPrintData.set(null)" />
+}
+
+@if (packingListPrintData(); as data) {
+  <app-packing-list-dialog [data]="data" (closed)="packingListPrintData.set(null)" />
+}
+
+@if (deliveryReceiptPrintData(); as data) {
+  <app-delivery-receipt-dialog [data]="data" (closed)="deliveryReceiptPrintData.set(null)" />
+}

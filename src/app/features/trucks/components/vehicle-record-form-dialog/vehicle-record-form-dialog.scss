@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+:host ::ng-deep .modal {
+  max-width: 640px;
+}
+
+.vr-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.vr-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}

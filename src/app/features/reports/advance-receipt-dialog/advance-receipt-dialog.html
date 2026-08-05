@@ -1,0 +1,87 @@
+<div
+  class="print-overlay"
+  role="presentation"
+  (click)="closed.emit()"
+  (keydown.escape)="closed.emit()"
+>
+  <div
+    class="doc-viewer fade-in"
+    dir="rtl"
+    role="dialog"
+    aria-modal="true"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+  >
+    <div class="doc-toolbar no-print">
+      <span class="doc-toolbar__title">إيصال سلفة سائق · {{ data().tripNo }}</span>
+      <div class="doc-toolbar__actions">
+        <button type="button" class="btn btn--primary btn--small" (click)="print()">🖨 طباعة</button>
+        <button type="button" class="btn btn--secondary btn--small" (click)="closed.emit()">
+          إغلاق
+        </button>
+      </div>
+    </div>
+
+    <div class="doc-page">
+      <div class="paper-head">
+        <div class="paper-head__co">
+          <div class="paper-head__co-name">مؤسسة الرمــاح</div>
+          <div class="paper-head__co-sub">للتصدير وخدمات الشحن الدولي</div>
+          <div class="paper-head__co-mgr">م/ رماح عبد الحليم</div>
+        </div>
+        <div class="paper-head__title-wrap">
+          <div class="paper-head__title">إيصال سلفة سائق</div>
+          <div class="paper-head__title-en">Advance Receipt</div>
+          <div class="paper-head__no">{{ data().tripNo }}</div>
+        </div>
+        <div class="paper-head__ids">
+          <div class="qr-box">
+            <img src="assets/icons/qr-placeholder.svg" width="62" height="62" alt="QR" />
+          </div>
+          <span class="brand-mark" style="--bm-h: 44px">
+            <img src="assets/logos/el-ramah-logo.png" alt="El Ramah" />
+          </span>
+        </div>
+      </div>
+
+      <p style="font-size: 13px; line-height: 1.9; color: #3f3f44">
+        أقر أنا السائق {{ data().driverName }} باستلام مبلغ سلفة قدره {{ data().amount }} نقداً
+        لتغطية مصاريف الرحلة {{ data().tripNo }} ({{ data().originCity }} →
+        {{ data().destinationCountry }}) من وقود وجمارك ورسوم حدود ومصاريف طارئة، وأتعهد بتقديم كشف
+        بالمصروفات عند انتهاء الرحلة.
+      </p>
+
+      <div class="doc-row">
+        <span class="doc-row__label">رقم الرحلة</span><span>{{ data().tripNo }}</span>
+      </div>
+      <div class="doc-row">
+        <span class="doc-row__label">السائق</span><span>{{ data().driverName }}</span>
+      </div>
+      <div class="doc-row">
+        <span class="doc-row__label">التاريخ</span><span>{{ data().date }}</span>
+      </div>
+      <div class="doc-row" style="font-weight: 800; font-size: 16px; background: #fafafa">
+        <span class="doc-row__label">سلفة السائق</span
+        ><span class="ink-warn">{{ data().amount }}</span>
+      </div>
+
+      <div class="doc-footer">
+        <div class="doc-footer__sig">السائق</div>
+        <div class="doc-footer__sig">محاسب</div>
+      </div>
+
+      <div class="barcode">
+        <img src="assets/icons/barcode-placeholder.svg" width="190" height="26" alt="barcode" />
+        <div class="barcode__text">{{ data().tripNo }}</div>
+      </div>
+
+      <div class="paper-foot">
+        <div class="paper-foot__line">٣٢ شارع أفريقيا - امتداد مصطفى النحاس - عمارة ٣٢ بلوك ٢٢</div>
+        <div class="paper-foot__line">
+          موبايل <span dir="ltr">( 01124411119 - 01287790001 - 01228004363 - 01152581111 )</span>
+        </div>
+        <div class="paper-foot__line" dir="ltr">ElRamah@Gmail.com</div>
+      </div>
+    </div>
+  </div>
+</div>

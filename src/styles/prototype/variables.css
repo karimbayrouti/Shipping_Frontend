@@ -1,0 +1,121 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS — extracted VERBATIM from the prototype (src/App.tsx GlobalStyles).
+   Do not edit values here without changing the prototype first: this file is the
+   pixel-perfection contract. Light theme = :root, dark theme = [data-theme="dark"].
+   ════════════════════════════════════════════════════════════════════════════ */
+:root {
+  --bg: #f6f6f7;
+  --surface: #ffffff;
+  --surface-2: #fafafa;
+  --surface-3: #f0f0f1;
+  --text: #161618;
+  --text-2: #3f3f44;
+  --muted: #6e6e76;
+  --faint: #a3a3ac;
+  --border: #e7e7ea;
+  --border-2: #f0f0f2;
+  --brand: #232326;
+  --brand-2: #0d0d0f;
+  --brand-soft: #ededee;
+  --brand-ink: #ffffff;
+  --ok: #0ea371;
+  --warn: #e08a00;
+  --danger: #e23b4e;
+  --info: #3b6ea5;
+  --accent: #52525b;
+  --ok-soft: #e5f6ef;
+  --warn-soft: #fdf2dd;
+  --danger-soft: #fdecee;
+  --info-soft: #eaf1f7;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 24px 56px rgba(0, 0, 0, 0.22);
+  --radius: 14px;
+  --radius-sm: 9px;
+  --sidebar: #141416;
+  --sidebar-2: #1e1e21;
+  --sidebar-active: #333338;
+  --sidebar-text: #a6a6ae;
+  --sidebar-text-active: #ffffff;
+  --sidebar-head: #717179;
+
+  /* Layout dimensions (were literals in the prototype: 248 / 64 / 64) */
+  --sidebar-width: 248px;
+  --sidebar-width-collapsed: 64px;
+  --header-height: 64px;
+
+  /* Font stack — verbatim from the prototype root containers */
+  --font-family: 'Cairo', 'Montserrat', 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+
+[data-theme='dark'] {
+  --bg: #0e0e0f;
+  --surface: #17171a;
+  --surface-2: #121214;
+  --surface-3: #1f1f23;
+  --text: #f0f0f2;
+  --text-2: #cbcbd2;
+  --muted: #93939c;
+  --faint: #64646d;
+  --border: #28282d;
+  --border-2: #202024;
+  --brand: #e6e6ea;
+  --brand-2: #ffffff;
+  --brand-soft: #2c2c32;
+  --brand-ink: #131316;
+  --ok-soft: #10362c;
+  --warn-soft: #3a2e15;
+  --danger-soft: #3a1f25;
+  --info-soft: #1c2733;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 24px 56px rgba(0, 0, 0, 0.65);
+  --sidebar: #0a0a0b;
+  --sidebar-2: #151517;
+  --sidebar-active: #2e2e33;
+}
+
+/* ── Status palette (prototype SC/SBG maps — fixed hex, identical in both themes).
+   Consumed by .status-badge[data-status="…"] in components.css. ── */
+:root {
+  --sc-draft: #6e6e76;            --sbg-draft: #f0f0f1;
+  --sc-ready: #2563eb;            --sbg-ready: #dbeafe;
+  --sc-assigned: #7c3aed;         --sbg-assigned: #ede9fe;
+  --sc-loaded: #0e7490;           --sbg-loaded: #cffafe;
+  --sc-inTransit: #b45309;        --sbg-inTransit: #fef3c7;
+  --sc-delivered: #059669;        --sbg-delivered: #d1fae5;
+  --sc-closed: #3f3f44;           --sbg-closed: #e7e7ea;
+  --sc-planned: #2563eb;          --sbg-planned: #dbeafe;
+  --sc-inProgress: #b45309;       --sbg-inProgress: #fef3c7;
+  --sc-arrived: #0891b2;          --sbg-arrived: #cffafe;
+  --sc-completed: #059669;        --sbg-completed: #d1fae5;
+  --sc-cancelled: #dc2626;        --sbg-cancelled: #fee2e2;
+  --sc-available: #059669;        --sbg-available: #d1fae5;
+  --sc-onRoad: #b45309;           --sbg-onRoad: #fef3c7;
+  --sc-offDuty: #6e6e76;          --sbg-offDuty: #f0f0f1;
+  --sc-settled: #059669;          --sbg-settled: #d1fae5;
+  --sc-unsettled: #dc2626;        --sbg-unsettled: #fee2e2;
+  --sc-partial: #b45309;          --sbg-partial: #fef3c7;
+  --sc-active: #059669;           --sbg-active: #d1fae5;
+  --sc-inactive: #6e6e76;         --sbg-inactive: #f0f0f1;
+  --sc-paid: #059669;             --sbg-paid: #d1fae5;
+  --sc-unpaid: #dc2626;           --sbg-unpaid: #fee2e2;
+  --sc-collected: #059669;        --sbg-collected: #d1fae5;
+  --sc-partialCollected: #b45309; --sbg-partialCollected: #fef3c7;
+  --sc-uncollected: #dc2626;      --sbg-uncollected: #fee2e2;
+  --sc-verified: #059669;         --sbg-verified: #d1fae5;
+  --sc-unverified: #b45309;       --sbg-unverified: #fef3c7;
+  --sc-pending: #b45309;          --sbg-pending: #fef3c7;
+  --sc-underReview: #2563eb;      --sbg-underReview: #dbeafe;
+  --sc-approved: #7c3aed;         --sbg-approved: #ede9fe;
+  --sc-returned: #be123c;         --sbg-returned: #ffe4e6;
+  --sc-driving: #b45309;          --sbg-driving: #fef3c7;
+  --sc-onBreak: #7c3aed;          --sbg-onBreak: #ede9fe;
+  --sc-waiting: #c2410c;          --sbg-waiting: #ffedd5;
+  --sc-delivering: #0891b2;       --sbg-delivering: #cffafe;
+  --sc-preparing: #2563eb;        --sbg-preparing: #dbeafe;
+  --sc-offline: #6e6e76;          --sbg-offline: #f0f0f1;
+  --sc-notStartedLoading: #6e6e76;--sbg-notStartedLoading: #f0f0f1;
+  --sc-loadingNow: #b45309;       --sbg-loadingNow: #fef3c7;
+  --sc-readyToDepart: #059669;    --sbg-readyToDepart: #d1fae5;
+}

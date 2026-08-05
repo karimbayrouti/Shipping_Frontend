@@ -1,0 +1,62 @@
+@use '../../styles/controls' as controls;
+
+@include controls.auth-controls;
+
+:host {
+  display: block;
+}
+
+.ca__hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.ca__error {
+  font-size: 12.5px;
+  color: var(--danger);
+  margin-bottom: 10px;
+}
+
+.ca__code {
+  font-size: 12.5px;
+  color: var(--ok);
+  background: var(--ok-soft);
+  border-radius: 8px;
+  padding: 8px 11px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.ca__forgot-row {
+  text-align: end;
+  margin-bottom: 14px;
+}
+
+// Prototype renders these as clickable spans; buttons keep the identical
+// inline look while staying keyboard-accessible.
+.ca__link {
+  display: inline;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  color: var(--brand);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ca__footer {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.inp--error {
+  border-color: var(--danger);
+}

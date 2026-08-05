@@ -1,0 +1,170 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   BASE — global rules extracted VERBATIM from the prototype GlobalStyles.
+   Reset · body · scrollbar · input focus · animations · responsive · print.
+   ════════════════════════════════════════════════════════════════════════════ */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-family);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+/* Scrollbar (WebKit) — as prototype */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--faint);
+}
+
+/* Inputs — focus ring & placeholder as prototype */
+input,
+select,
+textarea {
+  font-family: inherit;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--brand) !important;
+  box-shadow: 0 0 0 3px var(--brand-soft) !important;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--faint);
+}
+
+/* Interaction affordances — as prototype */
+.btn {
+  transition:
+    filter 0.15s ease,
+    transform 0.05s ease,
+    box-shadow 0.15s ease;
+}
+.btn:hover:not(:disabled) {
+  filter: brightness(0.97);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.card {
+  transition:
+    box-shadow 0.18s ease,
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+.card-int:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+  border-color: var(--brand);
+}
+.row {
+  transition: background 0.12s ease;
+}
+.row:hover {
+  background: var(--surface-2);
+}
+.navitem {
+  transition:
+    background 0.14s ease,
+    color 0.14s ease;
+}
+.icon-btn {
+  transition:
+    background 0.14s ease,
+    color 0.14s ease;
+}
+.icon-btn:hover {
+  background: var(--surface-3);
+}
+
+/* Animations — as prototype */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+.fade-in {
+  animation: fadeIn 0.25s ease both;
+}
+.skel {
+  background: linear-gradient(90deg, var(--surface-3) 25%, var(--surface-2) 37%, var(--surface-3) 63%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 8px;
+}
+
+/* Responsive helpers — as prototype */
+.tbl-wrap {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+}
+@media (max-width: 860px) {
+  .app-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 15, 30, 0.5);
+    z-index: 250;
+  }
+}
+@media (max-width: 640px) {
+  .app-main {
+    padding: 14px !important;
+  }
+  .app-main [style*='grid-template-columns'],
+  .app-main .grid-collapse {
+    grid-template-columns: 1fr !important;
+  }
+  .modal-body [style*='grid-template-columns'],
+  .modal-body .grid-collapse {
+    grid-template-columns: 1fr !important;
+  }
+  .hide-sm {
+    display: none !important;
+  }
+  .app-header {
+    gap: 8px !important;
+    padding: 0 10px !important;
+  }
+}
+
+/* Print — as prototype */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

@@ -1,0 +1,459 @@
+<ui-dialog
+  [title]="dialogTitle()"
+  [subtitle]="dialogSubtitle()"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <div class="history-body">
+    <!-- Status badge row -->
+    <div class="history-status-row">
+      <span class="status-badge" [attr.data-status]="truck().status">
+        @if (truck().status === 'onRoad') {
+          {{ text().statusOnRoad }}
+        } @else if (truck().status === 'available') {
+          {{ text().statusAvailable }}
+        } @else {
+          {{ text().statusOffDuty }}
+        }
+      </span>
+    </div>
+
+    <!-- KPI meta-grid -->
+    <div class="history-section-title">
+      <span class="history-section-title__icon">📊</span>
+      <span class="history-section-title__text">{{ text().historyDetailsSectionTitle }}</span>
+      <span class="history-section-title__rule"></span>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiCurrentDriver }}</div>
+        <div class="meta-item__value">{{ truck().stats.currentDriver }}</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiCurrentTrip }}</div>
+        <div class="meta-item__value meta-item__value--warn">
+          {{ truck().stats.currentTrip ?? '—' }}
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiTotalTrips }}</div>
+        <div class="meta-item__value meta-item__value--brand">{{ truck().stats.totalTrips }}</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiTripsThisMonth }}</div>
+        <div class="meta-item__value meta-item__value--brand">
+          {{ truck().stats.tripsThisMonth }}
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiDistance }}</div>
+        <div class="meta-item__value">{{ fmtStat(truck().stats.distanceKm) }}</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiRevenue }}</div>
+        <div class="meta-item__value meta-item__value--ok">
+          {{ fmtStat(truck().stats.revenue) }}
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiExpenses }}</div>
+        <div class="meta-item__value meta-item__value--danger">
+          {{ fmtStat(truck().stats.expenses) }}
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiMaintenanceCost }}</div>
+        <div class="meta-item__value meta-item__value--warn">
+          {{ fmtStat(truck().stats.maintenanceCost) }}
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiFuelCost }}</div>
+        <div class="meta-item__value meta-item__value--accent">
+          {{ fmtStat(truck().stats.fuelCost) }}
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiFines }}</div>
+        <div class="meta-item__value meta-item__value--ok">{{ truck().stats.fines }}</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiThisMonthCost }}</div>
+        <div class="meta-item__value meta-item__value--warn">
+          {{ fmtStat(truck().stats.thisMonthCost) }}
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiThisYearCost }}</div>
+        <div class="meta-item__value meta-item__value--warn">
+          {{ fmtStat(truck().stats.thisYearCost) }}
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiInsuranceStatus }}</div>
+        <div
+          class="meta-item__value"
+          [class.meta-item__value--danger]="truck().insurance?.state === 'expired'"
+          [class.meta-item__value--warn]="truck().insurance?.state === 'expiringSoon'"
+          [class.meta-item__value--ok]="truck().insurance?.state === 'active'"
+        >
+          {{ insuranceStatusValue() }}
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiLicenseExpiry }}</div>
+        <div class="meta-item__value">{{ truck().licenseExpiry }}</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiCurrentMileage }}</div>
+        <div class="meta-item__value">{{ fmtStat(truck().stats.currentMileageKm) }}</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-item__label">{{ text().historyKpiOpenReminders }}</div>
+        <div
+          class="meta-item__value"
+          [class.meta-item__value--warn]="truck().stats.openReminders > 0"
+          [class.meta-item__value--ok]="truck().stats.openReminders === 0"
+        >
+          {{ truck().stats.openReminders }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Renewals banner -->
+    @if (truck().stats.renewalCount > 0) {
+      <div class="banner banner--warn">
+        <div class="banner__icon">⏰</div>
+        <div class="banner__body">
+          <div class="banner__title">
+            {{ truck().stats.renewalCount }} {{ text().historyUpcomingRenewals }}
+          </div>
+          <div class="banner__text">{{ renewalBannerText() }}</div>
+        </div>
+      </div>
+    }
+
+    <!-- Print section -->
+    <div class="history-section-title">
+      <span class="history-section-title__icon">🖨</span>
+      <span class="history-section-title__text">{{ text().historyPrintSectionTitle }}</span>
+      <span class="history-section-title__rule"></span>
+      @if (truck().stats.currentTripNo) {
+        <span class="history-section-title__meta">
+          {{ truck().stats.currentTripNo }} · {{ truck().stats.currentTripShipments }}
+        </span>
+      }
+    </div>
+    <div class="history-print-actions">
+      <button
+        type="button"
+        class="btn btn--secondary btn--small"
+        (click)="openPrintDialog('manifest')"
+      >
+        {{ text().historyPrintManifest }}
+      </button>
+      <button
+        type="button"
+        class="btn btn--secondary btn--small"
+        (click)="openPrintDialog('waybills')"
+      >
+        {{ text().historyPrintWaybills }}
+      </button>
+      <button
+        type="button"
+        class="btn btn--secondary btn--small"
+        (click)="openPrintDialog('receipts')"
+      >
+        {{ text().historyPrintReceipts }}
+      </button>
+      <button
+        type="button"
+        class="btn btn--ghost btn--small"
+        [disabled]="!truck().stats.currentTripNo"
+        (click)="onTripDetailsRequested()"
+      >
+        {{ text().historyPrintSelected }}
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="history-tabs">
+      <button
+        type="button"
+        class="history-tabs__tab"
+        [class.is-active]="activeTab() === 'history'"
+        (click)="setTab('history')"
+      >
+        {{ text().historyTabHistory }}
+      </button>
+      <button
+        type="button"
+        class="history-tabs__tab"
+        [class.is-active]="activeTab() === 'insurance'"
+        (click)="setTab('insurance')"
+      >
+        {{ insuranceTabLabel() }}
+      </button>
+      <button
+        type="button"
+        class="history-tabs__tab"
+        [class.is-active]="activeTab() === 'timeline'"
+        (click)="setTab('timeline')"
+      >
+        {{ text().historyTabTimeline }}
+      </button>
+      <button
+        type="button"
+        class="history-tabs__tab"
+        [class.is-active]="activeTab() === 'trips'"
+        (click)="setTab('trips')"
+      >
+        {{ text().historyTabTrips }}
+      </button>
+    </div>
+
+    <!-- ── Tab: Vehicle History ── -->
+    @if (activeTab() === 'history') {
+      <div class="history-tab-toolbar">
+        <span class="history-tab-toolbar__meta">
+          {{ truck().vehicleRecords.length }} · ≈ {{ fmtStat(truck().stats.maintenanceCost) }}
+        </span>
+        <button
+          type="button"
+          class="btn btn--primary btn--small"
+          (click)="vehicleRecordRequested.emit(truck())"
+        >
+          {{ text().historyAddRecord }}
+        </button>
+      </div>
+
+      @if (truck().vehicleRecords.length > 0) {
+        <div class="tbl-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>{{ text().historyColDate }}</th>
+                <th>{{ text().historyColRecordType }}</th>
+                <th>{{ text().historyColMileage }}</th>
+                <th>{{ text().historyColCost }}</th>
+                <th>{{ text().historyColSupplier }}</th>
+                <th>{{ text().historyColInvoiceNo }}</th>
+                <th>{{ text().historyColNextService }}</th>
+                <th>{{ text().historyColStatus }}</th>
+                <th>{{ text().historyColNotes }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (record of truck().vehicleRecords; track record.id) {
+                <tr class="row">
+                  <td>{{ record.date }}</td>
+                  <td>{{ record.recordTypeLabel }}</td>
+                  <td>{{ record.mileageKm !== null ? (record.mileageKm | number) : '—' }}</td>
+                  <td>
+                    <span class="cost-value">{{ record.costDisplay }} EGP</span>
+                  </td>
+                  <td>{{ record.supplier }}</td>
+                  <td>{{ record.invoiceNo }}</td>
+                  <td>
+                    @if (record.nextServiceDate) {
+                      <span class="next-service-date">{{ record.nextServiceDate }}</span>
+                    } @else {
+                      —
+                    }
+                  </td>
+                  <td>
+                    @if (record.status === 'done') {
+                      <span class="pill pill--done">{{ recordStatusLabel(record.status) }}</span>
+                    } @else if (record.status === 'scheduled') {
+                      <span class="pill pill--scheduled">{{
+                        recordStatusLabel(record.status)
+                      }}</span>
+                    } @else {
+                      <span class="pill pill--pending">{{ recordStatusLabel(record.status) }}</span>
+                    }
+                  </td>
+                  <td>{{ record.notes }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="history-empty-state">
+          <div class="history-empty-state__icon">🔧</div>
+          <div class="history-empty-state__text">{{ text().historyEmptyRecords }}</div>
+        </div>
+      }
+    }
+
+    <!-- ── Tab: Insurance Records ── -->
+    @if (activeTab() === 'insurance') {
+      <div class="history-tab-toolbar">
+        <span class="history-tab-toolbar__meta">{{ truck().insuranceRecords.length }}</span>
+        <button
+          type="button"
+          class="btn btn--primary btn--small"
+          (click)="insurancePolicyRequested.emit(truck())"
+        >
+          {{ text().historyAddInsurance }}
+        </button>
+      </div>
+
+      @if (truck().insuranceRecords.length > 0) {
+        <div class="tbl-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>{{ text().historyColInsCompany }}</th>
+                <th>{{ text().historyColInsCountry }}</th>
+                <th>{{ text().historyColInsPolicyNo }}</th>
+                <th>{{ text().historyColInsCoverage }}</th>
+                <th>{{ text().historyColInsIssueDate }}</th>
+                <th>{{ text().historyColInsExpiryDate }}</th>
+                <th>{{ text().historyColInsCost }}</th>
+                <th>{{ text().historyColInsStatus }}</th>
+                <th>{{ text().historyColInsAttachment }}</th>
+                <th>{{ text().historyColInsNotes }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (rec of truck().insuranceRecords; track rec.id) {
+                <tr class="row">
+                  <td>{{ rec.insuranceCompany }}</td>
+                  <td>{{ rec.country }}</td>
+                  <td>{{ rec.policyNo }}</td>
+                  <td>{{ rec.coverageType }}</td>
+                  <td>{{ rec.issueDate }}</td>
+                  <td>
+                    <span class="next-service-date">{{ rec.expiryDate }}</span>
+                  </td>
+                  <td>
+                    <span class="cost-value">{{ rec.costDisplay }}</span>
+                  </td>
+                  <td>
+                    @if (rec.state === 'active') {
+                      <span class="pill pill--active">{{ insuranceStatusLabel(rec.state) }}</span>
+                    } @else if (rec.state === 'expiringSoon') {
+                      <span class="pill pill--expiring">{{ insuranceStatusLabel(rec.state) }}</span>
+                    } @else {
+                      <span class="pill pill--expired">{{ insuranceStatusLabel(rec.state) }}</span>
+                    }
+                  </td>
+                  <td>{{ rec.attachment || '—' }}</td>
+                  <td>{{ rec.notes || '—' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="history-empty-state">
+          <div class="history-empty-state__icon">🛡</div>
+          <div class="history-empty-state__text">{{ text().historyEmptyInsurance }}</div>
+        </div>
+      }
+    }
+
+    <!-- ── Tab: Recent Timeline ── -->
+    @if (activeTab() === 'timeline') {
+      @if (truck().timeline.length > 0) {
+        <ul class="timeline-list">
+          @for (event of truck().timeline; track event.date + event.title) {
+            <li class="timeline-item">
+              <!-- content first → appears on RIGHT in RTL -->
+              <div class="timeline-item__content">
+                <div class="timeline-item__badge" [attr.data-kind]="event.kind">
+                  {{ event.icon }}
+                </div>
+                <div class="timeline-item__body">
+                  <div class="timeline-item__title">{{ event.title }}</div>
+                  <div class="timeline-item__subtitle">{{ event.subtitle }}</div>
+                </div>
+              </div>
+              <!-- date last → appears on LEFT in RTL -->
+              <div class="timeline-item__date">{{ event.date }}</div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <div class="history-empty-state">
+          <div class="history-empty-state__icon">🕒</div>
+          <div class="history-empty-state__text">{{ text().historyEmptyTimeline }}</div>
+        </div>
+      }
+    }
+
+    <!-- ── Tab: Trips ── -->
+    @if (activeTab() === 'trips') {
+      @if (truck().trips.length > 0) {
+        <div class="tbl-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>{{ text().historyColTripNo }}</th>
+                <th>{{ text().historyColTripDest }}</th>
+                <th>{{ text().historyColTripDeparture }}</th>
+                <th>{{ text().historyColTripDriver }}</th>
+                <th>{{ text().historyColTripStatus }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (trip of truck().trips; track trip.tripNo) {
+                <tr class="row">
+                  <td>
+                    <b>{{ trip.tripNo }}</b>
+                  </td>
+                  <td>{{ trip.destination }}</td>
+                  <td>{{ trip.departure }}</td>
+                  <td>{{ trip.driver }}</td>
+                  <td>
+                    @if (trip.status === 'وصلت' || trip.status === 'Arrived') {
+                      <span class="pill pill--arrived">{{ trip.status }}</span>
+                    } @else if (trip.status === 'مغلقة' || trip.status === 'Closed') {
+                      <span class="pill pill--closed">{{ trip.status }}</span>
+                    } @else if (
+                      trip.status === 'مخطط' ||
+                      trip.status === 'مكتملة' ||
+                      trip.status === 'Planned' ||
+                      trip.status === 'Completed'
+                    ) {
+                      <span class="pill pill--planned">{{ trip.status }}</span>
+                    } @else {
+                      <span class="pill pill--closed">{{ trip.status }}</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="history-empty-state">
+          <div class="history-empty-state__icon">🚛</div>
+          <div class="history-empty-state__text">{{ text().historyEmptyTrips }}</div>
+        </div>
+      }
+    }
+  </div>
+
+  <div dialogActions class="history-dialog-actions">
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().close }}
+    </button>
+    <button type="button" class="btn btn--outline" (click)="editRequested.emit(truck())">
+      {{ text().historyEditTruck }}
+    </button>
+  </div>
+</ui-dialog>
+
+@if (activePrintDialog() === 'manifest') {
+  <app-loading-manifest-dialog [data]="manifestData" (closed)="closePrintDialog()" />
+}
+
+@if (activePrintDialog() === 'waybills') {
+  <app-waybill-batch-dialog [data]="waybillBatchData" (closed)="closePrintDialog()" />
+}
+
+@if (activePrintDialog() === 'receipts') {
+  <app-receipt-batch-dialog [data]="receiptBatchData" (closed)="closePrintDialog()" />
+}

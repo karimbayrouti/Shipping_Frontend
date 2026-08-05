@@ -1,0 +1,31 @@
+// Global element defaults, expressed exclusively through semantic tokens.
+//
+// RTL RULE (Charter AD-07): all layout in this codebase uses CSS LOGICAL
+// properties — margin-inline-start, padding-inline-end, inset-inline,
+// border-start-start-radius, text-align: start … Physical left/right values
+// are forbidden outside of genuinely direction-independent cases.
+// Direction is controlled by dir="rtl|ltr" on <html> (DirectionService, Phase 3).
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  color: var(--text-1);
+  background: var(--surface-page);
+  min-block-size: 100dvh;
+}
+
+// One consistent, token-driven focus indicator for the whole platform.
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+a {
+  color: var(--color-primary);
+}
+
+::selection {
+  background: var(--color-primary-soft);
+}

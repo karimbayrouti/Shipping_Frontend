@@ -1,0 +1,44 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 2 — SEMANTIC TOKENS, DARK THEME.
+// Same token names as _light.scss, different mappings. Activated by
+// `data-theme="dark"` on <html> (ThemeService, Phase 3).
+// ─────────────────────────────────────────────────────────────────────────────
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-primary: var(--blue-300);
+  --color-primary-hover: var(--blue-100);
+  --color-primary-soft: var(--blue-900);
+  --color-on-primary: var(--gray-900);
+
+  --surface-page: #121216;
+  --surface-1: var(--gray-900);
+  --surface-2: #26262e;
+  --surface-3: var(--gray-700);
+
+  --text-1: var(--gray-50);
+  --text-2: var(--gray-100);
+  --text-3: var(--gray-300);
+  --text-disabled: var(--gray-500);
+
+  --border-1: var(--gray-700);
+  --border-2: #2c2c35;
+  --focus-ring: var(--blue-500);
+
+  --status-success: #34c07e;
+  --status-success-soft: #10331f;
+  --status-warning: #f3a33c;
+  --status-warning-soft: #3a2a10;
+  --status-danger: #f26d6d;
+  --status-danger-soft: #3d1414;
+  --status-info: #4db8e8;
+  --status-info-soft: #0e2c3d;
+
+  --validation-error: #f26d6d;
+  --validation-error-soft: #3d1414;
+
+  // Shadows read differently on dark surfaces — deepen them.
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-2: 0 2px 8px rgb(0 0 0 / 0.5);
+  --shadow-3: 0 8px 28px rgb(0 0 0 / 0.6);
+}

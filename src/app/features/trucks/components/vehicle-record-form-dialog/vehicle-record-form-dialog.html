@@ -1,0 +1,155 @@
+<ui-dialog
+  [title]="text().vehicleRecordFormTitle"
+  [subtitle]="text().vehicleRecordFormSubtitle"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="vr-form">
+    <!-- ── Section 1: Vehicle Information ── -->
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">🚚</span>
+        <div>
+          <div class="form-section__title">{{ text().vehicleRecordSectionVehicle }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        <div class="form-section__grid form-section__grid--2 grid-collapse">
+          <div class="field">
+            <label class="field__label" for="vr-truck">{{ text().vehicleRecordTruck }}</label>
+            <select id="vr-truck" class="select" formControlName="truckId">
+              <option [value]="null">—</option>
+              @for (truck of trucks(); track truck.id) {
+                <option [value]="truck.id">
+                  {{ truck.plateNumber }} — {{ truck.vehicleType }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="vr-type">{{ text().vehicleRecordType }}</label>
+            <select id="vr-type" class="select" formControlName="recordType">
+              @for (opt of recordTypeOptions; track opt.value) {
+                <option [value]="opt.value">{{ resolvedLabel(opt) }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="vr-date">{{ text().vehicleRecordDate }}</label>
+            <input id="vr-date" class="input" type="date" formControlName="date" />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="vr-mileage">{{ text().vehicleRecordMileage }}</label>
+            <input id="vr-mileage" class="input" type="number" formControlName="mileageKm" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 2: Financial Information ── -->
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">💰</span>
+        <div>
+          <div class="form-section__title">{{ text().vehicleRecordSectionFinancial }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        <div class="form-section__grid grid-collapse">
+          <div class="field">
+            <label class="field__label" for="vr-cost">{{ text().vehicleRecordCost }}</label>
+            <input id="vr-cost" class="input" type="number" formControlName="cost" />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="vr-currency">{{ text().vehicleRecordCurrency }}</label>
+            <select id="vr-currency" class="select" formControlName="currency">
+              @for (c of currencies; track c.value) {
+                <option [value]="c.value">{{ resolvedCurrencyLabel(c) }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="vr-supplier">{{ text().vehicleRecordSupplier }}</label>
+            <input id="vr-supplier" class="input" formControlName="supplier" />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="vr-invoice">{{ text().vehicleRecordInvoiceNo }}</label>
+            <input id="vr-invoice" class="input" formControlName="invoiceNo" />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="vr-attachment">{{
+              text().vehicleRecordAttachment
+            }}</label>
+            <input
+              id="vr-attachment"
+              class="input"
+              formControlName="attachment"
+              [placeholder]="text().vehicleRecordAttachmentPlaceholder"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 3: Reminders ── -->
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">⏰</span>
+        <div>
+          <div class="form-section__title">{{ text().vehicleRecordSectionReminders }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        <div class="form-section__grid grid-collapse">
+          <div class="field">
+            <label class="field__label" for="vr-next-service">{{
+              text().vehicleRecordNextServiceDate
+            }}</label>
+            <input
+              id="vr-next-service"
+              class="input"
+              type="date"
+              formControlName="nextServiceDate"
+            />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="vr-reminder">{{
+              text().vehicleRecordReminderDate
+            }}</label>
+            <input id="vr-reminder" class="input" type="date" formControlName="reminderDate" />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="vr-status">{{ text().vehicleRecordStatus }}</label>
+            <select id="vr-status" class="select" formControlName="status">
+              <option value="done">{{ text().vehicleRecordStatusDone }}</option>
+              <option value="scheduled">{{ text().vehicleRecordStatusScheduled }}</option>
+            </select>
+          </div>
+
+          <div class="field span-all">
+            <label class="field__label" for="vr-notes">{{ text().vehicleRecordNotes }}</label>
+            <input id="vr-notes" class="input" formControlName="notes" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div dialogActions class="vr-footer">
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().cancel }}
+    </button>
+    <button type="button" class="btn btn--primary" (click)="onSubmit()">
+      {{ text().save }}
+    </button>
+  </div>
+</ui-dialog>

@@ -1,0 +1,143 @@
+<div class="ca__hint">
+  @switch (view()) {
+    @case ('login') {
+      {{ t().portalSubtitle }}
+    }
+    @case ('register') {
+      {{ t().registerHint }}
+    }
+    @case ('forgot') {
+      {{ t().cpForgot }}
+    }
+    @case ('reset') {
+      {{ t().cpReset }}
+    }
+    @case ('activate') {
+      {{ t().activateHint }}
+    }
+  }
+</div>
+
+@if (view() === 'register') {
+  <div class="field">
+    <label class="field__label" for="ca-name">{{ t().companyName }}</label>
+    <input
+      id="ca-name"
+      class="inp"
+      [value]="form().name"
+      (input)="setField('name', $event)"
+      [placeholder]="t().fullName"
+    />
+  </div>
+  <div class="field">
+    <label class="field__label" for="ca-phone">{{ t().phone }}</label>
+    <input
+      id="ca-phone"
+      class="inp"
+      [value]="form().phone"
+      (input)="setField('phone', $event)"
+      placeholder="+9665…"
+    />
+  </div>
+}
+
+<div class="field">
+  <label class="field__label" for="ca-email">{{ t().emailAddress }}</label>
+  <input
+    id="ca-email"
+    class="inp"
+    type="email"
+    [value]="form().email"
+    (input)="setField('email', $event)"
+    placeholder="you@company.com"
+  />
+</div>
+
+@if (view() !== 'forgot') {
+  <div class="field">
+    <label class="field__label" for="ca-password">
+      {{ view() === 'reset' ? t().newPassword : t().passwordLabel }}
+    </label>
+    <input
+      id="ca-password"
+      class="inp"
+      type="password"
+      [value]="form().password"
+      (input)="setField('password', $event)"
+      placeholder="••••••••"
+    />
+  </div>
+}
+
+@if (view() === 'register' || view() === 'reset') {
+  <div class="field">
+    <label class="field__label" for="ca-confirm">{{ t().confirmPassword }}</label>
+    <input
+      id="ca-confirm"
+      class="inp"
+      [class.inp--error]="mismatch()"
+      type="password"
+      [value]="form().confirm"
+      (input)="setField('confirm', $event)"
+      placeholder="••••••••"
+    />
+    @if (mismatch()) {
+      <div class="field__hint">{{ t().passwordMismatch }}</div>
+    }
+  </div>
+}
+
+@if (view() === 'forgot' && resetCode() === '__none__') {
+  <div class="ca__error">{{ t().noPortalAccount }}</div>
+}
+@if (view() === 'reset' && resetCode() && resetCode() !== '__none__') {
+  <div class="ca__code">{{ t().resetCodeDemo }} {{ resetCode() }}</div>
+}
+
+@if (view() === 'login') {
+  <div class="ca__forgot-row">
+    <button type="button" class="ca__link" (click)="view.set('forgot')">{{ t().cpForgot }}</button>
+  </div>
+}
+
+<button type="button" class="btn btn--primary btn--full" (click)="submit()">
+  @switch (view()) {
+    @case ('login') {
+      {{ t().loginToPortal }} →
+    }
+    @case ('register') {
+      {{ t().createAccount }}
+    }
+    @case ('forgot') {
+      {{ t().sendResetLink }}
+    }
+    @case ('reset') {
+      {{ t().cpReset }}
+    }
+    @case ('activate') {
+      {{ t().cpActivate }}
+    }
+  }
+</button>
+
+<div class="ca__footer">
+  @if (view() === 'login') {
+    <div>
+      {{ t().noAccount }}
+      <button type="button" class="ca__link" (click)="view.set('register')">
+        {{ t().cpRegister }}
+      </button>
+      ·
+      <button type="button" class="ca__link" (click)="view.set('activate')">
+        {{ t().cpActivate }}
+      </button>
+    </div>
+  } @else {
+    <div>
+      {{ t().haveAccount }}
+      <button type="button" class="ca__link" (click)="view.set('login')">
+        {{ t().backToLogin }}
+      </button>
+    </div>
+  }
+</div>

@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+// Matches the prototype's style="max-width: 480px" on the transfer-shipment modal.
+:host ::ng-deep .modal {
+  max-width: 480px;
+}
+
+@media (max-width: 640px) {
+  :host ::ng-deep .modal-body .grid-collapse {
+    grid-template-columns: 1fr !important;
+  }
+}

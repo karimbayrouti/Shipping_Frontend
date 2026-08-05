@@ -1,0 +1,25 @@
+:host {
+  display: block;
+}
+
+.row-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.insurance {
+  font-weight: 700;
+}
+
+.insurance--warn {
+  color: var(--warn);
+}
+
+.insurance--expired {
+  color: var(--danger);
+}
+
+.maintenance-cost {
+  color: var(--warn);
+  font-weight: 600;
+}

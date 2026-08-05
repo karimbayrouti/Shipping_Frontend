@@ -1,0 +1,109 @@
+<div
+  class="print-overlay"
+  role="presentation"
+  (click)="closed.emit()"
+  (keydown.escape)="closed.emit()"
+>
+  <div
+    class="doc-viewer fade-in"
+    dir="rtl"
+    role="dialog"
+    aria-modal="true"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+  >
+    <div class="doc-toolbar no-print">
+      <span class="doc-toolbar__title">سند قبض · {{ data().voucherNo }}</span>
+      <div class="doc-toolbar__actions">
+        <button type="button" class="btn btn--primary btn--small" (click)="print()">🖨 طباعة</button>
+        <button type="button" class="btn btn--secondary btn--small" (click)="closed.emit()">
+          إغلاق
+        </button>
+      </div>
+    </div>
+
+    <div class="doc-page">
+      <div class="paper-head">
+        <div class="paper-head__co">
+          <div class="paper-head__co-name">مؤسسة الرمــاح</div>
+          <div class="paper-head__co-sub">للتصدير وخدمات الشحن الدولي</div>
+          <div class="paper-head__co-mgr">م/ رماح عبد الحليم</div>
+        </div>
+        <div class="paper-head__title-wrap">
+          <div class="paper-head__title">سند قبض</div>
+          <div class="paper-head__title-en">Receipt Voucher</div>
+          <div class="paper-head__no">{{ data().voucherNo }}</div>
+        </div>
+        <div class="paper-head__ids">
+          <div class="qr-box">
+            <img src="assets/icons/qr-placeholder.svg" width="62" height="62" alt="QR" />
+          </div>
+          <span class="brand-mark" style="--bm-h: 44px">
+            <img src="assets/logos/el-ramah-logo.png" alt="El Ramah" />
+          </span>
+        </div>
+      </div>
+
+      <div
+        style="
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 6px;
+          margin-bottom: 12px;
+          font-size: 13px;
+        "
+      >
+        <div><b>رقم الشحنة:</b> {{ data().shipmentNo }}</div>
+        <div><b>التاريخ:</b> {{ data().date }}</div>
+        <div><b>العميل:</b> {{ data().customerName }}</div>
+        <div>
+          <b>الهاتف:</b> <span dir="ltr">{{ data().customerPhone }}</span>
+        </div>
+        <div><b>طريقة الدفع:</b> {{ data().paymentMethod }}</div>
+        <div><b>استلمها:</b> {{ data().receivedBy }}</div>
+      </div>
+
+      <div
+        style="
+          border: 2px solid #131316;
+          border-radius: 6px;
+          padding: 14px 16px;
+          margin: 6px 0 12px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <span style="font-size: 14px; font-weight: 800">المبلغ</span>
+        <span style="font-size: 22px; font-weight: 900">{{ data().amount }}</span>
+      </div>
+
+      <div class="doc-totals">
+        <div class="doc-totals__row">
+          <span>القيمة النهائية</span><span>{{ data().finalValue }}</span>
+        </div>
+        <div class="doc-totals__row doc-totals__row--grand">
+          <span>المتبقي</span><span class="ink-danger">{{ data().remaining }}</span>
+        </div>
+      </div>
+
+      <div class="doc-footer">
+        <div class="doc-footer__sig">العميل</div>
+        <div class="doc-footer__sig">محاسب</div>
+      </div>
+
+      <div class="barcode">
+        <img src="assets/icons/barcode-placeholder.svg" width="190" height="26" alt="barcode" />
+        <div class="barcode__text">{{ data().voucherNo }}</div>
+      </div>
+
+      <div class="paper-foot">
+        <div class="paper-foot__line">٣٢ شارع أفريقيا - امتداد مصطفى النحاس - عمارة ٣٢ بلوك ٢٢</div>
+        <div class="paper-foot__line">
+          موبايل <span dir="ltr">( 01124411119 - 01287790001 - 01228004363 - 01152581111 )</span>
+        </div>
+        <div class="paper-foot__line" dir="ltr">ElRamah@Gmail.com</div>
+      </div>
+    </div>
+  </div>
+</div>

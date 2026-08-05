@@ -1,0 +1,116 @@
+<div
+  class="print-overlay"
+  role="presentation"
+  (click)="closed.emit()"
+  (keydown.escape)="closed.emit()"
+>
+  <div
+    class="doc-viewer fade-in"
+    dir="rtl"
+    role="dialog"
+    aria-modal="true"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+  >
+    <div class="doc-toolbar no-print">
+      <span class="doc-toolbar__title">فاتورة شحن · {{ data().invoiceNo }}</span>
+      <div class="doc-toolbar__actions">
+        <button type="button" class="btn btn--primary btn--small" (click)="print()">🖨 طباعة</button>
+        <button type="button" class="btn btn--secondary btn--small" (click)="closed.emit()">
+          إغلاق
+        </button>
+      </div>
+    </div>
+
+    <div class="doc-page">
+      <div class="paper-head">
+        <div class="paper-head__co">
+          <div class="paper-head__co-name">مؤسسة الرمــاح</div>
+          <div class="paper-head__co-sub">للتصدير وخدمات الشحن الدولي</div>
+          <div class="paper-head__co-mgr">م/ رماح عبد الحليم</div>
+        </div>
+        <div class="paper-head__title-wrap">
+          <div class="paper-head__title">فاتورة شحن</div>
+          <div class="paper-head__title-en">Tax Invoice</div>
+          <div class="paper-head__no">{{ data().invoiceNo }}</div>
+        </div>
+        <div class="paper-head__ids">
+          <div class="qr-box">
+            <img src="assets/icons/qr-placeholder.svg" width="62" height="62" alt="QR" />
+          </div>
+          <span class="brand-mark" style="--bm-h: 44px">
+            <img src="assets/logos/el-ramah-logo.png" alt="El Ramah" />
+          </span>
+        </div>
+      </div>
+
+      <div
+        style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px"
+      >
+        <div>
+          <div><b>رقم الفاتورة:</b> {{ data().invoiceNo }}</div>
+          <div><b>فاتورة إلى:</b> {{ data().billedTo }}</div>
+        </div>
+        <div style="text-align: left">
+          <div><b>تاريخ الإصدار:</b> {{ data().issueDate }}</div>
+          <div><b>تاريخ الاستحقاق:</b> {{ data().dueDate }}</div>
+        </div>
+      </div>
+
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th style="text-align: right">رقم الشحنة</th>
+            <th style="text-align: right">الوصف</th>
+            <th>الوجهة</th>
+            <th>السعر</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ data().shipmentNo }}</td>
+            <td style="text-align: right">{{ data().description }}</td>
+            <td>{{ data().destinationCity }}</td>
+            <td>{{ data().priceLabel }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="doc-totals" style="width: 260px">
+        <div class="doc-totals__row">
+          <span>المجموع الفرعي</span><span>{{ data().subtotalLabel }}</span>
+        </div>
+        <div class="doc-totals__row">
+          <span>ضريبة القيمة المضافة ({{ data().vatRatePercent }}%)</span>
+          <span>{{ data().vatLabel }}</span>
+        </div>
+        <div class="doc-totals__row doc-totals__row--grand">
+          <span>الإجمالي</span><span class="ink-ok">{{ data().totalLabel }}</span>
+        </div>
+        <div style="text-align: right; margin-top: 6px">
+          <span class="status-badge" [attr.data-status]="data().status">{{
+            data().statusLabel
+          }}</span>
+        </div>
+      </div>
+
+      <div class="doc-footer">
+        <div class="doc-footer__sig">العميل</div>
+        <div class="doc-footer__sig">محاسب</div>
+      </div>
+
+      <div class="barcode">
+        <img src="assets/icons/barcode-placeholder.svg" width="190" height="26" alt="barcode" />
+        <div class="barcode__text">{{ data().invoiceNo }}</div>
+      </div>
+
+      <div class="paper-foot">
+        <div class="paper-foot__line">٣٢ شارع أفريقيا - امتداد مصطفى النحاس - عمارة ٣٢ بلوك ٢٢</div>
+        <div class="paper-foot__line">
+          موبايل <span dir="ltr">( 01124411119 - 01287790001 - 01228004363 - 01152581111 )</span>
+        </div>
+        <div class="paper-foot__line" dir="ltr">ElRamah@Gmail.com</div>
+      </div>
+    </div>
+  </div>
+</div>

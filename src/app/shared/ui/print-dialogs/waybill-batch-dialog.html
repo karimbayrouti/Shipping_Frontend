@@ -1,0 +1,281 @@
+<div
+  class="print-overlay"
+  role="presentation"
+  (click)="closed.emit()"
+  (keydown.escape)="closed.emit()"
+>
+  <div
+    class="doc-viewer fade-in"
+    dir="rtl"
+    role="dialog"
+    aria-modal="true"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+  >
+    <div class="doc-toolbar no-print">
+      <span class="doc-toolbar__title">طباعة كل البوالص · {{ data().tripNo }}</span>
+      <div class="doc-toolbar__actions">
+        <button type="button" class="btn btn--primary btn--small" (click)="print()">🖨 طباعة</button>
+        <button type="button" class="btn btn--secondary btn--small" (click)="closed.emit()">
+          إغلاق
+        </button>
+      </div>
+    </div>
+
+    @for (wb of data().waybills; track wb.waybillNo; let last = $last) {
+      <div
+        class="doc-page"
+        [style.margin-bottom]="last ? '0' : '28px'"
+        [style.padding-bottom]="last ? '0' : '16px'"
+        [style.border-bottom]="last ? 'none' : '2px dashed #d1d1d5'"
+      >
+        <div class="paper-head">
+          <div class="paper-head__co">
+            <div class="paper-head__co-name">مؤسسة الرمــاح</div>
+            <div class="paper-head__co-sub">للتصدير وخدمات الشحن الدولي</div>
+            <div class="paper-head__co-mgr">م/ رماح عبد الحليم</div>
+          </div>
+          <div class="paper-head__title-wrap">
+            <div class="paper-head__title">بوليصة شحن</div>
+            <div class="paper-head__title-en">Shipping Waybill</div>
+            <div class="paper-head__no">{{ wb.waybillNo }}</div>
+          </div>
+          <div class="paper-head__ids">
+            <div class="qr-box">
+              <img src="assets/icons/qr-placeholder.svg" width="62" height="62" alt="QR" />
+            </div>
+            <span class="brand-mark" style="--bm-h: 44px">
+              <img src="assets/logos/el-ramah-logo.png" alt="El Ramah" />
+            </span>
+          </div>
+        </div>
+
+        <div class="dot-row" style="font-size: 12px">
+          <span class="dot-row__label">التاريخ :</span
+          ><span class="dot-row__value">{{ wb.date }}</span>
+          <span class="dot-row__label">Date :</span><span class="dot-row__value"></span>
+        </div>
+        <div class="dot-row" style="font-size: 12px">
+          <span class="dot-row__label">الشاحــــن :</span
+          ><span class="dot-row__value">{{ wb.shipper }}</span>
+          <span class="dot-row__label">shipper :</span><span class="dot-row__value"></span>
+        </div>
+        <div class="dot-row" style="font-size: 12px">
+          <span class="dot-row__label">المرسل إليه :</span
+          ><span class="dot-row__value">{{ wb.consignee }}</span>
+          <span class="dot-row__label">Coasignee :</span><span class="dot-row__value"></span>
+        </div>
+        <div class="dot-row" style="font-size: 12px">
+          <span class="dot-row__label">مكان الشحـن :</span
+          ><span class="dot-row__value">{{ wb.originCity }}</span>
+          <span class="dot-row__label">مكان التسليم :</span
+          ><span class="dot-row__value">{{ wb.destinationCity }}</span>
+        </div>
+
+        <table class="wb-table">
+          <thead>
+            <tr>
+              <th>عدد الطرود<br /><small>No.of colies</small></th>
+              <th>الوزن بالطن<br /><small>G.W</small></th>
+              <th>نوع الطرود<br /><small>Type of Pkgs</small></th>
+              <th style="width: 34%">الصـــنف</th>
+              <th>الكمية<br /><small>Quantity</small></th>
+              <th>الحجم م³<br /><small>Volume</small></th>
+              <th>الأبعاد سم</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ wb.packages }}</td>
+              <td>{{ wb.weightTon }}</td>
+              <td>
+                {{ wb.packageType }}
+                <div style="font-size: 9px; color: #4a4a4f">{{ wb.goodsCategory }}</div>
+              </td>
+              <td style="text-align: right">{{ wb.goodsDescription }}</td>
+              <td>{{ wb.quantity }}</td>
+              <td>{{ wb.volumeM3 }}</td>
+              <td>{{ wb.dimensionsCm }}</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr class="is-total">
+              <td>{{ wb.packages }}</td>
+              <td>{{ wb.weightTon }}</td>
+              <td></td>
+              <td style="text-align: right">الإجمالي</td>
+              <td></td>
+              <td>{{ wb.volumeM3 }}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="wb-split">
+          <div class="wb-split__goods">
+            <div class="wb-sec-head">بيــــان البضـــاعــة</div>
+            <div style="padding: 6px 8px; font-size: 11.5px; min-height: 150px; line-height: 1.9">
+              {{ wb.goodsDescription }}
+            </div>
+          </div>
+          <div>
+            <div class="wb-sec-head">بيــان الســيارة والســـائق</div>
+            <div style="padding: 2px 10px 6px">
+              <div class="wb-vrow">
+                <span class="dot-row__label">رقم السيارة :</span
+                ><span class="dot-row__value">{{ wb.truckPlate }}</span
+                ><span class="dot-row__label">رخصة رقم :</span><span class="dot-row__value">—</span>
+              </div>
+              <div class="wb-vrow">
+                <span class="dot-row__label">اسم السائق :</span
+                ><span class="dot-row__value">{{ wb.driverName }}</span
+                ><span class="dot-row__label">رقم التليفون :</span
+                ><span class="dot-row__value" dir="ltr">{{ wb.driverPhone }}</span>
+              </div>
+              <div class="wb-vrow">
+                <span class="dot-row__label">جنسيتـــه :</span
+                ><span class="dot-row__value">{{ wb.driverNationality }}</span
+                ><span class="dot-row__label">الرقم القومي :</span
+                ><span class="dot-row__value">{{ wb.driverNationalId }}</span>
+              </div>
+              <div class="wb-vrow">
+                <span class="dot-row__label">رقم جواز السفر :</span
+                ><span class="dot-row__value">{{ wb.driverPassport }}</span>
+              </div>
+              <div class="wb-vrow">
+                <span class="dot-row__label">جهة وتاريخ صدوره :</span
+                ><span class="dot-row__value">{{ wb.driverPassportIssue }}</span>
+              </div>
+              <div class="wb-vrow">
+                <span class="dot-row__label">رخصة القيادة :</span
+                ><span class="dot-row__value">{{ wb.driverLicense }}</span
+                ><span class="dot-row__label">سارية حتى :</span
+                ><span class="dot-row__value">{{ wb.driverLicenseExpiry }}</span>
+              </div>
+              <div class="wb-vrow">
+                <span class="dot-row__label">عنـــوان الســائق :</span
+                ><span class="dot-row__value">{{ wb.driverAddress }}</span>
+              </div>
+              <div class="wb-vrow">
+                <span class="dot-row__label">اسم مالك السيارة :</span
+                ><span class="dot-row__value">{{ wb.truckOwner }}</span>
+              </div>
+              <div class="wb-vrow">
+                <span class="dot-row__label">عنوان مالك السيارة :</span
+                ><span class="dot-row__value">{{ wb.ownerAddress }}</span
+                ><span class="dot-row__label">جنسيته :</span
+                ><span class="dot-row__value">{{ wb.ownerNationality }}</span>
+              </div>
+              <div class="wb-vrow">
+                <span class="dot-row__label">نوع الســـيارة :</span
+                ><span class="dot-row__value">{{ wb.truckModel }}</span
+                ><span class="dot-row__label">لون السيارة :</span
+                ><span class="dot-row__value">{{ wb.truckColor }}</span>
+              </div>
+              <div class="wb-vrow">
+                <span class="dot-row__label">موديـل :</span
+                ><span class="dot-row__value">{{ wb.truckYear }}</span
+                ><span class="dot-row__label">الحمولة :</span
+                ><span class="dot-row__value">{{ wb.truckCapacity }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wb-frame">
+          <div class="wb-frame__title">بيان عن النولون :</div>
+          <div class="wb-vrow">
+            <span class="dot-row__label">أجرة الشحـــن :</span
+            ><span class="dot-row__value">{{ wb.freightFee }}</span
+            ><span class="dot-row__label">المصاريف :</span><span class="dot-row__value"></span>
+          </div>
+          <div class="wb-vrow">
+            <span class="dot-row__label">باقي قيمة النولون :</span
+            ><span class="dot-row__value">{{ wb.freightBalance }}</span
+            ><span class="dot-row__label">فقط لاغير :</span><span class="dot-row__value"></span>
+          </div>
+          <div class="wb-vrow">
+            <span class="dot-row__label">برجاء إعطاء الســائق :</span
+            ><span class="dot-row__value">{{ wb.driverAdvance }}</span
+            ><span class="dot-row__label">وقدره :</span><span class="dot-row__value"></span>
+          </div>
+          <div class="wb-vrow">
+            <span class="dot-row__label">ملاحظات / تحسب العطلة للسائق بعد :</span
+            ><span class="dot-row__value">{{ wb.notes }}</span>
+          </div>
+        </div>
+
+        <div class="wb-frame">
+          <div class="wb-frame__title">إقرار سائق</div>
+          <p>
+            أقر أنني استلمت مشمول هذه البوليصة بصفة أمانة وراقبت وأشرفت على حمولتي وأوقع أشعار بصحة
+            بيانات هذه البوليصة، علماً بأن أي تلف أو نقص أعتبر نفسي مسئولاً عنه ومتضامناً مع صاحب
+            السيارة دون الرجوع للشركة الناقلة، وأتعهد بتسليم كافة البضاعة المبينة في الأوراق
+            المثبوتة إلى العميـــل المرسل إليه.
+          </p>
+          <div style="display: flex; gap: 18px; flex-wrap: wrap">
+            <div class="wb-vrow" style="flex: 1; min-width: 160px">
+              <span class="dot-row__label">توقيع الشاحن :</span><span class="dot-row__value"></span>
+            </div>
+            <div class="wb-vrow" style="flex: 1; min-width: 160px">
+              <span class="dot-row__label">المدير العام :</span
+              ><span class="dot-row__value">{{ wb.managerName }}</span>
+            </div>
+          </div>
+          <div class="wb-vrow" style="margin-top: 8px">
+            <span class="dot-row__label">وهذا إقرار منى بذلك — توقيع السائق :</span
+            ><span class="dot-row__value">{{ wb.driverName }}</span>
+          </div>
+          <div class="wb-vrow" style="margin-top: 6px">
+            <span class="dot-row__label">ملاحظات :</span
+            ><span class="dot-row__value">{{ wb.notes }}</span>
+          </div>
+        </div>
+
+        <div class="wb-frame" style="margin-bottom: 0">
+          <p style="margin-bottom: 6px">
+            أقر أنا مندوب الشاحن بصحة بيانات هذه البوليصة / أقر أنا المستلم بأنني قد استلمت البضاعة
+            مشمولة هذه البوليصة بعددها الكامل وقد أخليت مسئولية السيارة ومالكها والشركة الناقلة
+            ووكيل شركة النقل.
+          </p>
+          <div class="wb-vrow">
+            <span class="dot-row__label">التوقيع (توقيع العميل) :</span
+            ><span class="dot-row__value"></span
+            ><span class="dot-row__label" style="margin-inline-start: 14px">توقيع المخزن :</span
+            ><span class="dot-row__value"></span>
+          </div>
+        </div>
+
+        <div class="barcode">
+          <img src="assets/icons/barcode-placeholder.svg" width="190" height="26" alt="barcode" />
+          <div class="barcode__text">{{ wb.waybillNo }}</div>
+        </div>
+        <div class="paper-foot">
+          <div class="paper-foot__line">
+            ٣٢ شارع أفريقيا - امتداد مصطفى النحاس - عمارة ٣٢ بلوك ٢٢
+          </div>
+          <div class="paper-foot__line">
+            موبايل <span dir="ltr">( 01124411119 - 01287790001 - 01228004363 - 01152581111 )</span>
+          </div>
+          <div class="paper-foot__line" dir="ltr">ElRamah@Gmail.com</div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

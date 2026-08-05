@@ -1,0 +1,150 @@
+<div class="tbl-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>{{ text().colShipmentNumber }}</th>
+        <th>{{ text().colCustomer }}</th>
+        <th>{{ text().colDestination }}</th>
+        <th>{{ text().colWarehouse }}</th>
+        <th>{{ text().colPackages }}</th>
+        <th>{{ text().colFinalValue }}</th>
+        <th>{{ text().colRemaining }}</th>
+        <th>{{ text().colTrip }}</th>
+        <th>{{ text().colCollectionStatus }}</th>
+        <th>{{ text().colStatus }}</th>
+        <th>{{ text().colActions }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (shipment of rows(); track shipment.id) {
+        <tr
+          class="row"
+          tabindex="0"
+          (click)="openRow(shipment)"
+          (keydown)="onRowKeydown($event, shipment)"
+        >
+          <td>
+            <b>{{ shipmentCode(shipment.id) }}</b>
+          </td>
+          <td>{{ shipment.customerName }}</td>
+          <td>{{ shipment.destinationCountry }} - {{ shipment.destinationCity }}</td>
+          <td>
+            <span class="warehouse-cell">{{ warehouseLabel(shipment.warehouse) }}</span>
+          </td>
+          <td>{{ shipment.packageCount }}</td>
+          <td>
+            <span class="money money--ok">{{
+              formatMoney(shipment.finalValue, localizedCurrencySymbol(shipment.currency))
+            }}</span>
+          </td>
+          <td>
+            @if (shipment.remainingBalance !== null) {
+              <span class="money money--danger">{{
+                formatMoney(shipment.remainingBalance, localizedCurrencySymbol(shipment.currency))
+              }}</span>
+            } @else {
+              <span class="cell-placeholder">—</span>
+            }
+          </td>
+          <td>{{ shipment.tripNumber ?? '—' }}</td>
+          <td>
+            @if (shipment.collectionStatus !== null) {
+              <span class="status-badge" [attr.data-status]="shipment.collectionStatus">
+                {{ collectionLabel(shipment.collectionStatus) }}
+              </span>
+            } @else {
+              <span class="cell-placeholder">—</span>
+            }
+          </td>
+          <td>
+            <span class="status-cell">
+              <span class="status-badge" [attr.data-status]="shipment.status">
+                {{ statusLabel(shipment.status) }}
+              </span>
+              @if (shipment.hasShortage) {
+                <span class="shortage-flag" [attr.title]="text().statusShortage">⚠️</span>
+              }
+            </span>
+          </td>
+          <td>
+            <div class="row-actions">
+              <button
+                type="button"
+                class="btn btn--ghost btn--small"
+                (click)="view($event, shipment)"
+              >
+                {{ text().view }}
+              </button>
+              @if (canReceive(shipment.status)) {
+                <button
+                  type="button"
+                  class="btn btn--warning btn--small"
+                  (click)="receive($event, shipment)"
+                >
+                  {{ text().receiveShipmentAction }}
+                </button>
+              }
+              @if (canRecordPayment(shipment.status)) {
+                <button
+                  type="button"
+                  class="btn btn--primary btn--small"
+                  (click)="pay($event, shipment)"
+                >
+                  {{ text().newPayment }}
+                </button>
+              }
+              @if (canTransfer(shipment.status)) {
+                <button
+                  type="button"
+                  class="btn btn--icon-only"
+                  [attr.title]="text().transferShipmentAction"
+                  [attr.aria-label]="text().transferShipmentAction"
+                  (click)="transfer($event, shipment)"
+                >
+                  🔁
+                </button>
+              }
+            </div>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="11">
+            <div class="empty-state empty-state--compact">
+              <div class="empty-state__icon">📦</div>
+              <div class="empty-state__title">{{ text().noResults }}</div>
+              <div class="empty-state__hint">{{ text().noResultsHint }}</div>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (total() > pageSize()) {
+  <div class="table-pagination">
+    <span>{{ startIndex() }}–{{ endIndex() }} {{ text().of }} {{ total() }}</span>
+    <div class="table-pagination__nav">
+      <button
+        type="button"
+        class="page-btn icon-btn"
+        [disabled]="page() === 0"
+        (click)="pageChange.emit(page() - 1)"
+        aria-label="Previous page"
+      >
+        {{ previousSymbol() }}
+      </button>
+      <span class="table-pagination__page">{{ page() + 1 }} / {{ pageCount() }}</span>
+      <button
+        type="button"
+        class="page-btn icon-btn"
+        [disabled]="page() >= pageCount() - 1"
+        (click)="pageChange.emit(page() + 1)"
+        aria-label="Next page"
+      >
+        {{ nextSymbol() }}
+      </button>
+    </div>
+  </div>
+}

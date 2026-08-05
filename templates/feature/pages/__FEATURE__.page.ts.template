@@ -1,0 +1,9 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+
+@Component({
+  selector: 'app-__FEATURE__-page',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './__FEATURE__.page.html',
+  styleUrl: './__FEATURE__.page.scss',
+})
+export class __Feature__Page {}

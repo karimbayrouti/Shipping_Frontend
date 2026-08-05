@@ -1,0 +1,11 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// BREAKPOINTS — SCSS variables (CSS custom properties cannot be used inside
+// @media queries). Consume via the `respond-to` mixin in styles/mixins/_media.scss;
+// never write a raw @media width in a component.
+//   sm  — large phones          md — tablets / small laptops
+//   lg  — desktop               xl — wide desktop
+// ─────────────────────────────────────────────────────────────────────────────
+$breakpoint-sm: 600px;
+$breakpoint-md: 900px;
+$breakpoint-lg: 1280px;
+$breakpoint-xl: 1600px;

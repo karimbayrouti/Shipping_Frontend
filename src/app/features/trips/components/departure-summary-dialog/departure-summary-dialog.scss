@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+
+:host ::ng-deep .modal {
+  max-width: 740px;
+}
+
+// The `[dialogActions]` node itself (declared in this component's own
+// template) is what `ui-dialog` projects into its footer — it is the
+// footer's only direct child, so the shared footer's flex/gap has no
+// buttons to space. Laying out this node as a flex row is what actually
+// puts space between the Close / Print Manifest / Confirm & Depart buttons.
+[dialogActions] {
+  display: flex;
+  gap: 12px;
+}

@@ -1,0 +1,181 @@
+<ui-dialog
+  [title]="truck() ? text().formEditTitle : text().formAddTitle"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <form id="truck-form" [formGroup]="form" (ngSubmit)="submit()">
+    <!-- Section 1: Vehicle Information -->
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">🚚</span>
+        <div>
+          <div class="form-section__title">{{ text().formSectionVehicle }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        <div class="form-section__grid form-section__grid--2 grid-collapse">
+          <div class="field">
+            <label class="field__label" for="truck-plate-no">{{ text().formPlateNo }}</label>
+            <input
+              data-dialog-initial-focus
+              id="truck-plate-no"
+              class="input"
+              formControlName="plateNumber"
+            />
+            @if (form.controls.plateNumber.touched && form.controls.plateNumber.invalid) {
+              <div class="field__hint form-error">{{ text().formRequired }}</div>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="truck-vehicle-type">{{
+              text().formVehicleType
+            }}</label>
+            <input id="truck-vehicle-type" class="input" formControlName="vehicleType" />
+            @if (form.controls.vehicleType.touched && form.controls.vehicleType.invalid) {
+              <div class="field__hint form-error">{{ text().formRequired }}</div>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="truck-model">{{ text().formModel }}</label>
+            <input id="truck-model" class="input" formControlName="vehicleModel" />
+            @if (form.controls.vehicleModel.touched && form.controls.vehicleModel.invalid) {
+              <div class="field__hint form-error">{{ text().formRequired }}</div>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="truck-color">{{ text().formVehicleColor }}</label>
+            <input id="truck-color" class="input" formControlName="vehicleColor" />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="truck-capacity">{{ text().formCapacityKg }}</label>
+            <input
+              id="truck-capacity"
+              class="input"
+              type="number"
+              min="1"
+              formControlName="capacityKg"
+            />
+            @if (form.controls.capacityKg.touched && form.controls.capacityKg.invalid) {
+              <div class="field__hint form-error">{{ text().formRequired }}</div>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="truck-transport-type">{{
+              text().formTransportType
+            }}</label>
+            <select id="truck-transport-type" class="select" formControlName="transportType">
+              <option value="owned">{{ text().formTransportOwned }}</option>
+              <option value="rented">{{ text().formTransportRented }}</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="truck-license-no">{{
+              text().formVehicleLicenseNo
+            }}</label>
+            <input id="truck-license-no" class="input" formControlName="vehicleLicenseNo" />
+            @if (form.controls.vehicleLicenseNo.touched && form.controls.vehicleLicenseNo.invalid) {
+              <div class="field__hint form-error">{{ text().formRequired }}</div>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="truck-license-expiry">{{
+              text().formLicenseExpiry
+            }}</label>
+            <input
+              id="truck-license-expiry"
+              class="input"
+              type="date"
+              formControlName="licenseExpiry"
+            />
+            @if (form.controls.licenseExpiry.touched && form.controls.licenseExpiry.invalid) {
+              <div class="field__hint form-error">{{ text().formRequired }}</div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Assignment & Vehicle -->
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">🧑‍✈️</span>
+        <div>
+          <div class="form-section__title">{{ text().formSectionAssignment }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        <div class="form-section__grid form-section__grid--2 grid-collapse">
+          <div class="field">
+            <label class="field__label" for="truck-status">{{ text().formStatus }}</label>
+            <select id="truck-status" class="select" formControlName="status">
+              <option value="available">{{ text().statusAvailable }}</option>
+              <option value="onRoad">{{ text().statusOnRoad }}</option>
+              <option value="offDuty">{{ text().statusOffDuty }}</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="truck-driver">{{ text().formDriver }}</label>
+            <select id="truck-driver" class="select" formControlName="driverName">
+              <option [value]="null">{{ text().formDriverNone }}</option>
+              <option value="يوسف الحناوي">يوسف الحناوي</option>
+              <option value="حسن المغربي">حسن المغربي</option>
+              <option value="إبراهيم سعيد">إبراهيم سعيد</option>
+              <option value="طارق سليمان">طارق سليمان</option>
+              <option value="عبد الله رشاد">عبد الله رشاد</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Owner Information -->
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">🏢</span>
+        <div>
+          <div class="form-section__title">{{ text().formSectionOwner }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        <div class="form-section__grid form-section__grid--2 grid-collapse">
+          <div class="field">
+            <label class="field__label" for="truck-owner-name">{{ text().formOwnerName }}</label>
+            <input id="truck-owner-name" class="input" formControlName="ownerName" />
+            @if (form.controls.ownerName.touched && form.controls.ownerName.invalid) {
+              <div class="field__hint form-error">{{ text().formRequired }}</div>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="truck-owner-phone">{{ text().formOwnerPhone }}</label>
+            <input id="truck-owner-phone" class="input" type="tel" formControlName="ownerPhone" />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="truck-owner-address">{{
+              text().formOwnerAddress
+            }}</label>
+            <input id="truck-owner-address" class="input" formControlName="ownerAddress" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div dialogActions class="truck-form-actions">
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().cancel }}
+    </button>
+    <button type="submit" form="truck-form" class="btn btn--primary">
+      {{ text().save }}
+    </button>
+  </div>
+</ui-dialog>

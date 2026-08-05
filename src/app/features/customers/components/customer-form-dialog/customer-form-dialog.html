@@ -1,0 +1,56 @@
+<ui-dialog
+  [title]="customer() ? text().editCustomer : text().addCustomer"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <form id="customer-form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-grid-2 grid-collapse">
+      <div class="field">
+        <label class="field__label" for="customer-name">{{ text().name }} *</label>
+        <input data-dialog-initial-focus id="customer-name" class="input" formControlName="name" />
+        @if (form.controls.name.touched && form.controls.name.invalid) {
+          <div class="field__hint form-error">{{ text().required }}</div>
+        }
+      </div>
+      <div class="field">
+        <label class="field__label" for="customer-phone">{{ text().phone }} *</label>
+        <input id="customer-phone" class="input" formControlName="phone" />
+        @if (form.controls.phone.touched && form.controls.phone.invalid) {
+          <div class="field__hint form-error">{{ text().required }}</div>
+        }
+      </div>
+      <div class="field">
+        <label class="field__label" for="customer-email">{{ text().email }}</label>
+        <input id="customer-email" class="input" type="email" formControlName="email" />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <div class="field__hint form-error">{{ text().invalidEmail }}</div>
+        }
+      </div>
+      <div class="field">
+        <label class="field__label" for="customer-city">{{ text().city }} *</label>
+        <input id="customer-city" class="input" formControlName="city" />
+        @if (form.controls.city.touched && form.controls.city.invalid) {
+          <div class="field__hint form-error">{{ text().required }}</div>
+        }
+      </div>
+      <div class="field">
+        <label class="field__label" for="customer-governorate">{{ text().governorate }} *</label>
+        <input id="customer-governorate" class="input" formControlName="governorate" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="customer-country">{{ text().country }} *</label>
+        <input id="customer-country" class="input" formControlName="country" />
+      </div>
+    </div>
+    <div class="field">
+      <label class="field__label" for="customer-notes">{{ text().notes }}</label>
+      <textarea id="customer-notes" class="textarea" rows="3" formControlName="notes"></textarea>
+    </div>
+  </form>
+  <div dialogActions>
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().cancel }}
+    </button>
+    <button type="submit" form="customer-form" class="btn btn--primary">{{ text().save }}</button>
+  </div>
+</ui-dialog>

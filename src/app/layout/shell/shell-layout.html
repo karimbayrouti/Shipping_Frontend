@@ -1,0 +1,17 @@
+<div class="app-shell">
+  @if (shellUi.sidebarOpen()) {
+    <button
+      type="button"
+      class="app-backdrop no-print"
+      aria-label="Close navigation"
+      (click)="shellUi.sidebarOpen.set(false)"
+    ></button>
+  }
+  <app-sidebar />
+  <div class="app-body">
+    <app-header />
+    <main class="app-main fade-in">
+      <router-outlet />
+    </main>
+  </div>
+</div>

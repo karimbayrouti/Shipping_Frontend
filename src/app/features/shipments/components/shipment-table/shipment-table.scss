@@ -1,0 +1,46 @@
+:host {
+  display: block;
+}
+.warehouse-cell {
+  color: var(--faint);
+}
+.money {
+  font-weight: 600;
+}
+.money--ok {
+  color: var(--ok);
+}
+.money--danger {
+  color: var(--danger);
+}
+.status-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.shortage-flag {
+  color: var(--danger);
+}
+.row-actions {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.btn--icon-only {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  background: var(--info-soft);
+  color: var(--info);
+  border: 1px solid transparent;
+  font-size: 12px;
+  line-height: 1;
+}
+.cell-placeholder {
+  color: var(--faint);
+}
+.data-table tbody tr:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: -2px;
+}

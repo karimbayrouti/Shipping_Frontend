@@ -1,0 +1,139 @@
+<ui-dialog
+  [title]="text().insuranceFormAddTitle"
+  [subtitle]="text().insuranceFormSubtitle"
+  [closeLabel]="text().close"
+  (closeRequested)="closed.emit()"
+>
+  <form id="insurance-policy-form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">🚚</span>
+        <div>
+          <div class="form-section__title">{{ text().insuranceSectionVehicle }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        <div class="form-section__grid form-section__grid--2 grid-collapse">
+          <div class="field">
+            <label class="field__label" for="ins-truck">{{ text().insuranceTruck }} *</label>
+            <select
+              data-dialog-initial-focus
+              id="ins-truck"
+              class="select"
+              formControlName="truckId"
+            >
+              <option [value]="null">{{ text().insuranceTruckPlaceholder }}</option>
+              @for (truck of trucks(); track truck.id) {
+                <option [value]="truck.id">
+                  {{ truck.plateNumber }} — {{ truck.vehicleType }}
+                </option>
+              }
+            </select>
+            @if (form.controls.truckId.touched && form.controls.truckId.invalid) {
+              <div class="field__hint form-error">{{ text().formRequired }}</div>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ins-company">{{ text().insuranceCompany }} *</label>
+            <input id="ins-company" class="input" formControlName="insuranceCompany" />
+            @if (form.controls.insuranceCompany.touched && form.controls.insuranceCompany.invalid) {
+              <div class="field__hint form-error">{{ text().formRequired }}</div>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ins-country">{{ text().insuranceCountry }}</label>
+            <input
+              id="ins-country"
+              class="input"
+              [placeholder]="text().insuranceCountryPlaceholder"
+              formControlName="country"
+            />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ins-policy-no">{{ text().insurancePolicyNo }}</label>
+            <input id="ins-policy-no" class="input" formControlName="policyNo" />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ins-coverage">{{
+              text().insuranceCoverageType
+            }}</label>
+            <input
+              id="ins-coverage"
+              class="input"
+              [placeholder]="text().insuranceCoverageTypePlaceholder"
+              formControlName="coverageType"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section__header">
+        <span class="form-section__icon">💰</span>
+        <div>
+          <div class="form-section__title">{{ text().insuranceSectionFinancial }}</div>
+        </div>
+      </div>
+      <div class="form-section__body">
+        <div class="form-section__grid grid-collapse">
+          <div class="field">
+            <label class="field__label" for="ins-issue-date">{{ text().insuranceIssueDate }}</label>
+            <input id="ins-issue-date" class="input" type="date" formControlName="issueDate" />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ins-expiry-date">{{
+              text().insuranceExpiryDate
+            }}</label>
+            <input id="ins-expiry-date" class="input" type="date" formControlName="expiryDate" />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ins-cost">{{ text().insurancePolicyCost }}</label>
+            <input id="ins-cost" class="input" type="number" min="0" formControlName="policyCost" />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ins-currency">{{ text().insuranceCurrency }}</label>
+            <select id="ins-currency" class="select" formControlName="currency">
+              @for (currency of currencies; track currency) {
+                <option [value]="currency">{{ currencyLabel(currency) }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ins-attachment">{{
+              text().insuranceAttachment
+            }}</label>
+            <input
+              id="ins-attachment"
+              class="input"
+              [placeholder]="text().insuranceAttachmentPlaceholder"
+              formControlName="attachment"
+            />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ins-notes">{{ text().insuranceNotes }}</label>
+            <input id="ins-notes" class="input" formControlName="notes" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div dialogActions class="insurance-form-actions">
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">
+      {{ text().cancel }}
+    </button>
+    <button type="submit" form="insurance-policy-form" class="btn btn--primary">
+      {{ text().save }}
+    </button>
+  </div>
+</ui-dialog>

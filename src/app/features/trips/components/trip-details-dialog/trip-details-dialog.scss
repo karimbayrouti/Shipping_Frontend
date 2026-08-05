@@ -1,0 +1,62 @@
+:host {
+  display: block;
+}
+
+// Max-width for this dialog — slightly wider than the prototype's 820px.
+// Scoped via ::ng-deep, safe here since :host renders as a standalone overlay
+// with no descendant components relying on `.modal` styling.
+:host ::ng-deep .modal {
+  max-width: 880px;
+}
+
+// The `[dialogActions]` node itself (declared in this component's own
+// template) is what `ui-dialog` projects into its footer — it is the
+// footer's only direct child, so the shared footer's flex/gap has no
+// buttons to space. Laying out this node as a flex row is what actually
+// puts space between the Close / Confirm Arrival / Settle buttons.
+[dialogActions] {
+  display: flex;
+  gap: 12px;
+}
+
+.dir-group {
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.dir-group__head {
+  background: var(--surface-3);
+  padding: 7px 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  justify-content: space-between;
+}
+.dir-group__count {
+  color: var(--ok);
+}
+.trip-ship-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-top: 1px solid var(--surface-3);
+  cursor: pointer;
+  font-size: 13px;
+  gap: 8px;
+}
+.trip-ship-row__meta {
+  color: var(--muted);
+}
+.trip-ship-row__end {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.trip-ship-row__charge {
+  color: var(--ok);
+  font-weight: 600;
+  white-space: nowrap;
+}

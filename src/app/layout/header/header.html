@@ -1,0 +1,122 @@
+<header class="app-header no-print">
+  <button
+    type="button"
+    class="icon-btn mobile-menu"
+    (click)="shellUi.sidebarOpen.update((value) => !value)"
+    aria-label="Menu"
+  >
+    ☰
+  </button>
+  <div class="app-header__titles">
+    <span class="app-header__section hide-sm">{{
+      currentGroup() ? label(currentGroup()!.titleAr, currentGroup()!.titleEn) : ''
+    }}</span
+    ><span class="app-header__page">{{
+      currentItem() ? label(currentItem()!.labelAr, currentItem()!.labelEn) : ''
+    }}</span>
+  </div>
+  <div class="global-search hide-sm">
+    <span class="global-search__icon">🔍</span>
+    <input
+      class="input"
+      [value]="query()"
+      (input)="onSearch($event)"
+      [placeholder]="label('بحث في النظام...', 'Search the system...')"
+    />
+    @if (query()) {
+      <div class="header-menu search-menu">
+        @for (item of searchResults(); track item.key) {
+          <a class="header-menu__item row" [routerLink]="item.route" (click)="query.set('')"
+            ><span>{{ item.icon }}</span
+            >{{ label(item.labelAr, item.labelEn) }}</a
+          >
+        } @empty {
+          <div class="header-menu__empty">—</div>
+        }
+      </div>
+    }
+  </div>
+  <div class="hide-sm header-flex"></div>
+  <div class="header-control">
+    <button type="button" class="btn btn--primary btn--small" (click)="toggleMenu('quick')">
+      ＋ <span class="hide-sm">{{ label('إنشاء سريع', 'Quick Create') }}</span>
+    </button>
+    @if (shellUi.headerMenu() === 'quick') {
+      <div class="header-menu">
+        <a class="header-menu__item row" routerLink="/portal/shipments"
+          >📥 {{ label('إنشاء إيصال استلام', 'Create Receipt') }}</a
+        ><a class="header-menu__item row" routerLink="/portal/trips"
+          >🚛 {{ label('إنشاء بوليصة / رحلة', 'Create Waybill') }}</a
+        ><a class="header-menu__item row" routerLink="/portal/invoices"
+          >🧾 {{ label('إنشاء فاتورة', 'Create Invoice') }}</a
+        ><a class="header-menu__item row" routerLink="/portal/customers"
+          >👥 {{ label('إضافة عميل', 'Add Customer') }}</a
+        >
+      </div>
+    }
+  </div>
+  <button
+    type="button"
+    class="icon-btn"
+    (click)="theme.toggle()"
+    [title]="
+      theme.theme() === 'dark'
+        ? label('الوضع الفاتح', 'Light Mode')
+        : label('الوضع الداكن', 'Dark Mode')
+    "
+  >
+    {{ theme.theme() === 'dark' ? '☀️' : '🌙' }}
+  </button>
+  <button type="button" class="icon-btn" (click)="language.toggle()">
+    <span class="language-code">{{ language.language() === 'ar' ? 'EN' : 'ع' }}</span>
+  </button>
+  <div class="header-control">
+    <button type="button" class="icon-btn" (click)="toggleMenu('notifications')">
+      🔔<span class="icon-btn__count">5</span>
+    </button>
+    @if (shellUi.headerMenu() === 'notifications') {
+      <div class="header-menu header-menu--notif">
+        <div class="header-menu__head">
+          <span class="header-menu__title">{{ label('الإشعارات', 'Notifications') }}</span
+          ><a class="header-menu__link" routerLink="/portal/dashboard">{{
+            label('عرض الكل', 'View all')
+          }}</a>
+        </div>
+        <div class="notif-item">
+          <span class="notif-item__icon">🔔</span>
+          <div>
+            <div class="notif-item__msg">
+              {{ label('توجد شحنات جاهزة للتعيين', 'Shipments are ready for assignment') }}
+            </div>
+            <div class="notif-item__meta">{{ label('النظام · الآن', 'System · now') }}</div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="header-divider hide-sm"></div>
+  <div class="header-meta hide-sm">
+    <span class="header-meta__branch"
+      >🏢 {{ label('الفرع الرئيسي - الرياض', 'Main Branch - Riyadh') }}</span
+    ><span class="header-meta__clock">{{ dateTime() }}</span>
+  </div>
+  <div class="header-control">
+    <button type="button" class="profile-btn" (click)="toggleMenu('profile')">
+      <span class="profile-btn__avatar">{{ session.user.charAt(0) }}</span>
+    </button>
+    @if (shellUi.headerMenu() === 'profile') {
+      <div class="header-menu profile-menu">
+        <div class="profile-summary">
+          <div class="profile-summary__name">{{ session.user }}</div>
+          <div class="profile-summary__role">{{ label('مدير النظام', 'Administrator') }}</div>
+          <div class="profile-summary__online">● {{ label('متصل', 'Online') }}</div>
+        </div>
+        <a class="header-menu__item row" routerLink="/portal/employees"
+          >🧑‍💼 {{ label('الحساب', 'Account') }}</a
+        ><button type="button" class="header-menu__item row sign-out" (click)="signOut()">
+          ⎋ {{ label('تسجيل الخروج', 'Sign Out') }}
+        </button>
+      </div>
+    }
+  </div>
+</header>

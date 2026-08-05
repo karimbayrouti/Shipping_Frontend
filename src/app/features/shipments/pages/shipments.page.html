@@ -1,0 +1,277 @@
+<div class="page-hero">
+  <div class="page-hero__icon shipments-hero__icon">📦</div>
+  <div class="page-hero__body">
+    <h1 class="page-hero__title">{{ text().pageTitle }}</h1>
+    <div class="page-hero__desc">{{ shipments().length }} {{ text().unit }}</div>
+  </div>
+  <button type="button" class="btn btn--primary" (click)="openCreateReceiptModal()">
+    ＋ {{ text().createReceipt }}
+  </button>
+</div>
+
+@if (shortageCount() > 0) {
+  <div class="banner banner--danger">
+    <div class="banner__icon">⚠️</div>
+    <div class="banner__body">
+      <div class="banner__title">{{ shortageCount() }} {{ text().shortageBannerTitle }}</div>
+      <div class="banner__text">{{ text().shortageBannerText }}</div>
+    </div>
+    <div class="banner__right">
+      <button type="button" class="btn btn--outline btn--small" (click)="showShortageOnly()">
+        {{ text().view }}
+      </button>
+    </div>
+  </div>
+}
+
+<div class="card" style="margin-bottom: 18px">
+  <div class="card__header">
+    <div>
+      <div class="card__title">{{ text().statusDistributionTitle }}</div>
+      <div class="card__sub">{{ shipments().length }} {{ text().unit }}</div>
+    </div>
+  </div>
+  <div class="seg-bar-wrap">
+    <div class="seg-bar">
+      <div class="seg-bar__track">
+        @for (segment of statusBreakdown(); track segment.status) {
+          <div
+            class="seg-bar__seg"
+            [title]="segment.label + ': ' + segment.count"
+            [style.width.%]="segment.percent"
+            [style.background]="'var(--sc-' + segment.status + ')'"
+          ></div>
+        }
+      </div>
+      <div class="seg-bar__legend">
+        @for (segment of statusBreakdown(); track segment.status) {
+          <div class="seg-bar__key">
+            <span
+              class="seg-bar__swatch"
+              [style.background]="'var(--sc-' + segment.status + ')'"
+            ></span>
+            <span class="seg-bar__label">{{ segment.label }}</span>
+            <span class="seg-bar__value">{{ segment.count }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="filter-bar">
+    <div class="search-bar">
+      <span class="search-bar__icon" aria-hidden="true">🔎</span>
+      <label class="visually-hidden" for="shipment-search">{{ text().search }}</label>
+      <input
+        id="shipment-search"
+        class="input"
+        type="search"
+        [value]="query()"
+        (input)="onSearch($event)"
+        [placeholder]="text().search"
+      />
+    </div>
+    <select class="select" [value]="statusFilter()" (change)="onStatusFilterChange($event)">
+      <option value="all">{{ text().statusFilterAll }}</option>
+      @for (status of statusOptions; track status) {
+        <option [value]="status">{{ statusLabel(status) }}</option>
+      }
+      <option value="shortage">{{ text().statusShortage }}</option>
+    </select>
+    <select
+      class="select"
+      style="width: 180px"
+      [value]="warehouseFilter()"
+      (change)="onWarehouseFilterChange($event)"
+    >
+      <option value="all">{{ text().warehouseFilterAll }}</option>
+      @for (warehouse of warehouseOptions; track warehouse) {
+        <option [value]="warehouse">{{ warehouseLabel(warehouse) }}</option>
+      }
+    </select>
+  </div>
+  <app-shipment-table
+    [rows]="visibleShipments()"
+    [total]="filteredShipments().length"
+    [page]="page()"
+    [pageSize]="pageSize"
+    [pageCount]="pageCount()"
+    [text]="text()"
+    [locale]="locale()"
+    (pageChange)="changePage($event)"
+    (viewShipment)="onViewShipment($event)"
+    (recordPayment)="onRecordPayment($event)"
+    (receiveShipment)="onReceiveShipment($event)"
+    (transferShipment)="onTransferShipment($event)"
+  />
+</div>
+
+@if (isFormOpen()) {
+  <app-shipment-form-dialog
+    [customers]="customers()"
+    [text]="text()"
+    [nextShipmentNumber]="nextShipmentNumber()"
+    [nextReceiptNumber]="nextReceiptNumber()"
+    [mode]="formMode()"
+    [initialData]="editingShipmentDraft()"
+    (closed)="closeFormDialog()"
+    (saved)="saveShipment($event)"
+    (customerCreated)="onCustomerCreated($event)"
+  />
+}
+
+@if (selectedShipmentDetails(); as details) {
+  <app-shipment-details-dialog
+    [details]="details"
+    [text]="text()"
+    (closed)="closeDetailsDialog()"
+    (editRequested)="onEditShipmentRequested()"
+    (applyDiscountRequested)="onApplyDiscountRequested()"
+    (createPaymentVoucherRequested)="onCreatePaymentVoucherRequested()"
+    (cancelShipmentRequested)="onCancelShipmentRequested()"
+    (markAsReturnedRequested)="onMarkShipmentReturnedRequested()"
+    (receiptVouchersLogPrintRequested)="onReceiptVouchersLogPrintRequested()"
+    (voucherPrintRequested)="onVoucherPrintRequested($event)"
+    (voucherDeleteRequested)="onVoucherDeleteRequested($event)"
+    (documentRequested)="onDocumentRequested($event)"
+    (docChainNodeSelected)="onDocChainNodeSelected($event)"
+  />
+}
+
+@if (receiptVouchersLogPrintData(); as data) {
+  <app-receipt-vouchers-log-dialog [data]="data" (closed)="closeReceiptVouchersLogPrint()" />
+}
+
+@if (voucherPrintData(); as data) {
+  <app-receipt-voucher-dialog [data]="data" (closed)="closeVoucherPrint()" />
+}
+
+@if (receivingReceiptPrintData(); as data) {
+  <app-receiving-receipt-dialog [data]="data" (closed)="closeReceivingReceiptPrint()" />
+}
+
+@if (packingListPrintData(); as data) {
+  <app-packing-list-dialog [data]="data" (closed)="closePackingListPrint()" />
+}
+
+@if (waybillPrintData(); as data) {
+  <app-waybill-dialog [data]="data" (closed)="closeWaybillPrint()" />
+}
+
+@if (deliveryReceiptPrintData(); as data) {
+  <app-delivery-receipt-dialog [data]="data" (closed)="closeDeliveryReceiptPrint()" />
+}
+
+@if (shippingInvoicePrintData(); as data) {
+  <app-shipping-invoice-dialog [data]="data" (closed)="closeShippingInvoicePrint()" />
+}
+
+@if (truckDetailsTruck(); as truck) {
+  <app-vehicle-history-dialog
+    [truck]="truck"
+    [text]="truckText()"
+    (closed)="closeTruckDetailsDialog()"
+    (editRequested)="onEditTruckRequestedFromHistory($event)"
+    (insurancePolicyRequested)="onInsurancePolicyRequestedFromTruckHistory()"
+    (vehicleRecordRequested)="onVehicleRecordRequestedFromTruckHistory($event)"
+    (tripDetailsRequested)="tripDetailsTripNo.set($event)"
+  />
+}
+
+@if (editTruckFromHistory(); as truck) {
+  <app-truck-form-dialog
+    [truck]="truck"
+    [text]="truckText()"
+    (closed)="closeEditTruckForm()"
+    (saved)="saveEditedTruckFromHistory($event)"
+  />
+}
+
+@if (showInsurancePolicyForm()) {
+  <app-insurance-policy-form-dialog
+    [trucks]="truckFixtures"
+    [text]="truckText()"
+    (closed)="closeInsurancePolicyForm()"
+    (saved)="saveInsurancePolicyFromTruckHistory($event)"
+  />
+}
+
+@if (vehicleRecordTruckId(); as truckId) {
+  <app-vehicle-record-form-dialog
+    [trucks]="truckFixtures"
+    [preselectedTruckId]="truckId"
+    [text]="truckText()"
+    (closed)="closeVehicleRecordForm()"
+    (saved)="saveVehicleRecordFromTruckHistory($event)"
+  />
+}
+
+@if (receiptVoucherShipment(); as shipment) {
+  <app-receipt-voucher-form-dialog
+    [shipment]="shipment"
+    [text]="text()"
+    (closed)="closeReceiptVoucherDialog()"
+    (saved)="saveReceiptVoucher($event)"
+  />
+}
+
+@if (transferShipmentTarget(); as shipment) {
+  <app-transfer-shipment-dialog
+    [shipment]="shipment"
+    [text]="text()"
+    (closed)="closeTransferDialog()"
+    (transferred)="saveTransfer($event)"
+  />
+}
+
+@if (showApplyDiscount() && selectedShipment(); as shipment) {
+  @if (selectedShipmentDetails(); as details) {
+    <app-apply-discount-dialog
+      [shipment]="shipment"
+      [details]="details"
+      [text]="text()"
+      (closed)="closeApplyDiscountDialog()"
+      (applied)="saveDiscount($event)"
+    />
+  }
+}
+
+@if (tripDetailsTrip(); as trip) {
+  <app-trip-details-dialog
+    [trip]="trip"
+    [rows]="tripDetailsRows()"
+    [text]="tripText()"
+    (closed)="closeTripDetailsDialog()"
+    (shipmentClicked)="onTripShipmentClicked($event)"
+    (confirmArrivalRequested)="onTripConfirmArrivalRequested()"
+    (settleRequested)="onTripSettleRequested()"
+    (printManifestRequested)="printTripManifest(trip)"
+    (printWaybillRequested)="printTripWaybill(trip)"
+    (printAllWaybillsRequested)="printAllTripWaybills(trip)"
+    (printSelectedWaybillsRequested)="printSelectedTripWaybills(trip, $event)"
+    (printReceiptsRequested)="printTripReceipts(trip)"
+    (printAdvanceReceiptRequested)="printTripAdvanceReceipt(trip)"
+  />
+}
+
+@if (tripManifestPrintData(); as data) {
+  <app-loading-manifest-dialog [data]="data" (closed)="tripManifestPrintData.set(null)" />
+}
+
+@if (tripWaybillBatchPrintData(); as data) {
+  <app-waybill-batch-dialog [data]="data" (closed)="tripWaybillBatchPrintData.set(null)" />
+}
+
+@if (tripReceiptBatchPrintData(); as data) {
+  <app-receipt-batch-dialog [data]="data" (closed)="tripReceiptBatchPrintData.set(null)" />
+}
+
+@if (tripWaybillPrintData(); as data) {
+  <app-waybill-dialog [data]="data" (closed)="tripWaybillPrintData.set(null)" />
+}
+
+@if (tripAdvanceReceiptPrintData(); as data) {
+  <app-advance-receipt-dialog [data]="data" (closed)="tripAdvanceReceiptPrintData.set(null)" />
+}

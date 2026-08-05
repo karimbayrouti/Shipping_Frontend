@@ -1,0 +1,65 @@
+<div class="tbl-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th (click)="onSort('name')">الاسم</th>
+        <th (click)="onSort('position')">المنصب</th>
+        <th (click)="onSort('department')">القسم</th>
+        <th>الهاتف</th>
+        <th (click)="onSort('netSalary')">صافي الراتب</th>
+        <th>الحالة</th>
+        <th>حالة العمل</th>
+        <th>العمل المُسند</th>
+        <th>إجراءات</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (emp of employees(); track emp.id) {
+        <tr class="row" (click)="onRowClick(emp)">
+          <td>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <span class="avatar"
+                ><span class="avatar__circle">{{ emp.name.charAt(0) }}</span></span
+              >
+              <div>
+                <div style="font-weight: 700">{{ emp.name }}</div>
+                <div style="font-size: 11px; color: var(--faint)">{{ emp.code }}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span style="font-weight: 600; color: var(--brand)">{{ emp.position }}</span>
+          </td>
+          <td>{{ emp.department }}</td>
+          <td>{{ emp.phone }}</td>
+          <td>
+            <span style="font-weight: 700; color: var(--brand)"
+              >{{ emp.netSalary | number }} ج.م</span
+            >
+          </td>
+          <td><span class="status-badge" [attr.data-status]="emp.status">نشط</span></td>
+          <td>
+            @if (emp.workStatus) {
+              <span class="status-badge" [attr.data-status]="emp.workStatus">
+                {{ emp.workStatus === 'onRoad' ? 'في الطريق' : 'متاح' }}
+              </span>
+            } @else {
+              —
+            }
+          </td>
+          <td>{{ emp.assignedWork ?? '—' }}</td>
+          <td>
+            <div style="display: flex; gap: 5px">
+              <button class="btn btn--ghost btn--small" (click)="onEditClick(emp, $event)">
+                عرض
+              </button>
+              <button class="btn btn--secondary btn--small" (click)="onEditClick(emp, $event)">
+                تعديل
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
