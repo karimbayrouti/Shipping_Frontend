@@ -10,9 +10,10 @@ import type { AppEnvironment } from './environment.model';
  */
 export const environment: AppEnvironment = {
   production: true,
-  apiUrl: '/api',
+  apiUrl: 'https://your-backend-api.example.com/api',
   useMockApi: false,
   features: {
     developerPlayground: false,
   },
 };
+

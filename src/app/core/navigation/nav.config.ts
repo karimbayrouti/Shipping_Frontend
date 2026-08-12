@@ -134,6 +134,13 @@ export const APP_NAV: readonly NavGroup[] = [
         icon: '🧑‍💼',
         route: '/portal/employees',
       },
+      {
+        key: 'ad-directory',
+        labelAr: 'دليل الموظفين (AD)',
+        labelEn: 'AD Directory',
+        icon: '🗂️',
+        route: '/portal/ad-directory',
+      },
     ],
   },
   {

@@ -1,0 +1,44 @@
+<div class="page-hero">
+  <div class="page-hero__icon" style="background: var(--info)">🗂️</div>
+  <div class="page-hero__body">
+    <h1 class="page-hero__title">دليل الموظفين (AD)</h1>
+    <div class="page-hero__desc">{{ employees.value()?.length ?? 0 }} موظف</div>
+  </div>
+</div>
+
+<div class="card">
+  @if (employees.isLoading()) {
+    <div style="padding: 24px; text-align: center">جارِ التحميل...</div>
+  } @else if (employees.error(); as error) {
+    <div style="padding: 24px; text-align: center; color: var(--danger)">
+      تعذّر تحميل البيانات: {{ error.message }}
+    </div>
+  } @else {
+    <div class="tbl-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>المسمى الوظيفي</th>
+            <th>القسم</th>
+            <th>البريد الإلكتروني</th>
+            <th>الهاتف</th>
+            <th>الموقع</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (employee of employees.value(); track employee.userPrincipalName) {
+            <tr>
+              <td>{{ employee.displayName ?? '—' }}</td>
+              <td>{{ employee.jobTitle ?? '—' }}</td>
+              <td>{{ employee.department ?? '—' }}</td>
+              <td>{{ employee.mail ?? '—' }}</td>
+              <td>{{ employee.mobilePhone ?? '—' }}</td>
+              <td>{{ employee.officeLocation ?? '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

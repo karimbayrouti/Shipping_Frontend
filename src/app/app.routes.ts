@@ -45,6 +45,14 @@ export const routes: Routes = [
 
           },
           {
+            path: 'ad-directory',
+            title: 'دليل الموظفين · نظام إدارة الشحن',
+            loadChildren: () =>
+              import('@features/ad-directory/ad-directory.routes').then(
+                (m) => m.adDirectoryRoutes,
+              ),
+          },
+          {
             path: 'warehouses',
             title: 'المستودعات · نظام إدارة الشحن',
             loadComponent: () => comingSoon(),

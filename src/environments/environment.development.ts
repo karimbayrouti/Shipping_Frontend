@@ -6,7 +6,7 @@ import type { AppEnvironment } from './environment.model';
  */
 export const environment: AppEnvironment = {
   production: false,
-  apiUrl: '/api',
+  apiUrl: 'http://localhost:5257/api',
   useMockApi: true,
   features: {
     developerPlayground: true,
