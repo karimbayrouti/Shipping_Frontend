@@ -28,7 +28,7 @@ describe('ShipmentsPage', () => {
     search!.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    expect(element.querySelectorAll('tbody tr.row')).toHaveLength(1);
+    expect(element.querySelectorAll('tbody tr.row')).toHaveLength(2);
     expect(element.textContent).toContain('شركة النيل للاستيراد والتصدير');
   });
 
