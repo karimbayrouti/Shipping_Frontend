@@ -12,6 +12,8 @@ Service via a GitHub Actions CI/CD pipeline that runs on every push to
 
 **Status:** the live Azure App Service was intentionally decommissioned after the internship concluded, to avoid ongoing costs against a personal Azure for Students subscription. The Docker build and CI/CD pipeline were fully verified working end-to-end during development — the Deploy step will fail until the App Service is re-provisioned.
 
+![Shipments page](shipments-screenshot.png)
+
 ## Engineering problems I diagnosed and fixed
 
 This app hit three real deployment failures on its way to production. Each
