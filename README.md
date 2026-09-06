@@ -10,7 +10,7 @@ SCSS design tokens · Arabic/English with runtime RTL/LTR.
 Service via a GitHub Actions CI/CD pipeline that runs on every push to
 `master`.
 
-**Status:** the Azure App Service is live again. It's now running on the Free (F1) tier instead of the original paid B1, a deliberate cost call on a personal Azure for Students subscription. It also landed in a different Azure region than originally planned: the original region returned a zero-quota error for F1, so it now runs in Germany West Central instead (full postmortem in `azure-terraform-practice`). The GitHub Actions deploy secret (`AZURE_WEBAPP_PUBLISH_PROFILE`) was issued for the previous App Service instance, and recreating the App Service generated new deployment credentials, so that secret is now stale and needs refreshing before the pipeline will deploy successfully again. The Docker build and CI/CD logic itself were fully verified working end to end during the internship.
+Status: the app is live. GitHub Actions deploys are currently failing on the Deploy to Azure Web App step with a 401 Unauthorized, caused by a stale AZURE_WEBAPP_PUBLISH_PROFILE secret after the App Service was recreated. The site itself still serves the last successful deploy. A fresh publish profile needs to be generated and the secret updated to restore the pipeline.
 
 ![Shipments page](shipments-screenshot.png)
 
