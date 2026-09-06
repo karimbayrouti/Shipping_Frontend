@@ -30,16 +30,11 @@ steps:
     displayName: 'Package app for deployment'
 
   - script: |
-      echo "Username length: ${#DEPLOY_USER}"
-      echo "Password length: ${#DEPLOY_PASS}"
-    displayName: 'Check credential lengths (safe, no values shown)'
-    env:
-      DEPLOY_USER: $(deployUsername)
-      DEPLOY_PASS: $(deployPassword)
-
-  - script: |
       curl -v -f -X POST \
-        -u $(deployUsername):$(deployPassword) \
+        -u "$DEPLOY_USER:$DEPLOY_PASS" \
         --data-binary @deploy.zip \
         "https://app-shipping-frontend.scm.azurewebsites.net/api/zipdeploy"
     displayName: 'Deploy to Azure App Service'
+    env:
+      DEPLOY_USER: $(deployUsername)
+      DEPLOY_PASS: $(deployPassword)
