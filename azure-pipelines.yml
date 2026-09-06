@@ -1,0 +1,37 @@
+trigger:
+  - master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: frontend-deploy-secrets
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '20.x'
+    displayName: 'Install Node.js'
+
+  - script: |
+      npm ci
+      npm run build -- --configuration production
+    displayName: 'Install dependencies and build'
+
+  - script: |
+      mkdir deploy
+      cp -r dist/ntx-erp-web/browser/* deploy/
+      cp server.js deploy/
+      cp package.json deploy/
+      cp package-lock.json deploy/
+      cd deploy
+      npm ci --omit=dev
+      zip -r ../deploy.zip .
+    displayName: 'Package app for deployment'
+
+  - script: |
+      curl -X POST \
+        -u $(deployUsername):$(deployPassword) \
+        --data-binary @deploy.zip \
+        "https://app-shipping-frontend.scm.azurewebsites.net/api/zipdeploy"
+    displayName: 'Deploy to Azure App Service'
