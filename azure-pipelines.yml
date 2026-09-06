@@ -28,6 +28,13 @@ steps:
       npm ci --omit=dev
       zip -r ../deploy.zip .
     displayName: 'Package app for deployment'
+    - script: |
+      echo "Username length: ${#DEPLOY_USER}"
+      echo "Password length: ${#DEPLOY_PASS}"
+    displayName: 'Check credential lengths (safe, no values shown)'
+    env:
+      DEPLOY_USER: $(deployUsername)
+      DEPLOY_PASS: $(deployPassword)
 
   - script: |
       curl -v -f -X POST \
