@@ -10,7 +10,7 @@ import type { AppEnvironment } from './environment.model';
  */
 export const environment: AppEnvironment = {
   production: true,
-  apiUrl: 'https://your-backend-api.example.com/api',
+ apiUrl: 'https://moc-api-karim-dev-cjd9gkhbg3cuhzba.italynorth-01.azurewebsites.net/api',
   useMockApi: false,
   features: {
     developerPlayground: false,
