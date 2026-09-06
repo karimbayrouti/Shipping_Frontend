@@ -30,7 +30,7 @@ steps:
     displayName: 'Package app for deployment'
 
   - script: |
-      curl -X POST \
+      curl -v -f -X POST \
         -u $(deployUsername):$(deployPassword) \
         --data-binary @deploy.zip \
         "https://app-shipping-frontend.scm.azurewebsites.net/api/zipdeploy"
