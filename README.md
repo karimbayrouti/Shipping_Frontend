@@ -10,7 +10,7 @@ SCSS design tokens · Arabic/English with runtime RTL/LTR.
 Service via a GitHub Actions CI/CD pipeline that runs on every push to
 `master`.
 
-**Status:** the live Azure App Service was intentionally decommissioned after the internship concluded, to avoid ongoing costs against a personal Azure for Students subscription. The Docker build and CI/CD pipeline were fully verified working end-to-end during development — the Deploy step will fail until the App Service is re-provisioned.
+**Status:** the Azure App Service is live again. It's now running on the Free (F1) tier instead of the original paid B1, a deliberate cost call on a personal Azure for Students subscription. It also landed in a different Azure region than originally planned: the original region returned a zero-quota error for F1, so it now runs in Germany West Central instead (full postmortem in `azure-terraform-practice`). The GitHub Actions deploy secret (`AZURE_WEBAPP_PUBLISH_PROFILE`) was issued for the previous App Service instance, and recreating the App Service generated new deployment credentials, so that secret is now stale and needs refreshing before the pipeline will deploy successfully again. The Docker build and CI/CD logic itself were fully verified working end to end during the internship.
 
 ![Shipments page](shipments-screenshot.png)
 
@@ -43,6 +43,24 @@ Azure's OneDeploy method never triggers Oryx's automatic build step, so
 `npm install` never actually ran server-side. Fixed by restructuring the
 CI/CD pipeline to run `npm ci --omit=dev` *inside* the deploy package
 before it ever reaches Azure, instead of relying on Azure to build it.
+
+## Second CI/CD pipeline: Azure DevOps
+
+This app also deploys through a second, independent pipeline built in Azure
+DevOps (Azure Repos + Azure Pipelines), separate from the GitHub Actions
+pipeline above.
+
+The normal way to let an Azure DevOps pipeline deploy to Azure is a Service
+Connection, and a Service Connection needs an App Registration in Azure AD.
+This tenant blocks App Registration creation for non-admin accounts, so that
+path was closed before it started. Instead, the pipeline authenticates the
+same way Kudu itself does: it publishes straight to the App Service's
+ZipDeploy REST endpoint with curl and Basic Auth, using the publish-profile
+credential directly rather than going through a Service Connection or a
+marketplace deploy task. Same deployment target, no App Registration
+required.
+
+The Azure DevOps project is private, so it isn't linked here.
 
 ## Quick start
 
